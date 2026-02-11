@@ -2,183 +2,95 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orange0730 Portfolio</title>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-/* ===== 基本設定 ===== */
 body{
-    margin:0;
-    font-family: "Segoe UI",sans-serif;
-    background:#0f172a;
-    color:white;
-    display:flex;
+margin:0;
+font-family:system-ui;
+background:#fafafa;
 }
 
-/* ===== 側邊欄 ===== */
-.sidebar{
-    width:240px;
-    background:#020617;
-    height:100vh;
-    padding:25px;
-    position:fixed;
+/* Navbar */
+nav{
+background:white;
+padding:15px 40px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
-.sidebar h2{
-    color:#38bdf8;
+nav a{
+margin-right:20px;
+text-decoration:none;
+color:#333;
+font-weight:500;
 }
 
-.sidebar a{
-    display:block;
-    padding:12px;
-    color:#94a3b8;
-    text-decoration:none;
-    border-radius:8px;
+header{
+padding:80px;
+text-align:center;
 }
 
-.sidebar a:hover{
-    background:#1e293b;
-    color:white;
-}
-
-/* ===== 主內容 ===== */
-.main{
-    margin-left:260px;
-    padding:40px;
-    flex:1;
-}
-
-/* ===== 標題 ===== */
-h1{
-    color:#38bdf8;
-}
-
-/* ===== 卡片 ===== */
-.card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:15px;
-    margin:20px 0;
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-}
-
-/* ===== 專案格子 ===== */
 .projects{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+padding:40px;
 }
 
-/* ===== Footer ===== */
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
 footer{
-    margin-top:60px;
-    color:#64748b;
-}
-
-/* ===== 手機版 ===== */
-@media(max-width:800px){
-    .sidebar{
-        position:relative;
-        width:100%;
-        height:auto;
-    }
-    .main{
-        margin-left:0;
-    }
+text-align:center;
+padding:40px;
+color:#666;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 側欄 -->
-<div class="sidebar">
-<h2>Orange0730</h2>
+<nav>
+<a href="#">Home</a>
+<a href="#">Projects</a>
+<a href="#">Competitive Programming</a>
+<a href="#">Blog</a>
+<a href="#">About</a>
+</nav>
 
-<a href="#about">關於我</a>
-<a href="#projects">專案作品</a>
-<a href="#coding">競程紀錄</a>
-<a href="#learning">學習歷程</a>
-<a href="#contact">聯絡方式</a>
-</div>
+<header>
+<h1>Orange0730</h1>
+<p>AI • Competitive Programming • Software Development</p>
+</header>
 
-<!-- 主畫面 -->
-<div class="main">
-
-<h1>🚀 技術作品集</h1>
-
-<section id="about">
-<div class="card">
-<h2>👋 關於我</h2>
-<p>
-資訊領域學習者，專注於：
-</p>
-<ul>
-<li>C++ 競程與演算法</li>
-<li>AI / 軟體開發</li>
-<li>App 與系統專案</li>
-</ul>
-</div>
-</section>
-
-<section id="projects">
-<h1>📦 專案作品</h1>
-
-<div class="projects">
+<section class="projects">
 
 <div class="card">
-<h3>♟ Chess AI</h3>
-AI 下棋訓練專案  
-演算法優化與模型實驗
+<h3>Chess AI</h3>
+AI下棋模型開發
 </div>
 
 <div class="card">
-<h3>📱 CampusBuddy</h3>
-校園互動 App  
-聊天、論壇、集點系統
+<h3>CampusBuddy</h3>
+校園互動App
 </div>
 
 <div class="card">
-<h3>🤖 AI Tools</h3>
-AI API 應用與工具開發
+<h3>Competitive Programming</h3>
+APCS / CSES / Codeforces
 </div>
 
-</div>
-</section>
-
-<section id="coding">
-<h1>💻 競程紀錄</h1>
-<div class="card">
-CSES / Codeforces / APCS / CPE  
-持續刷題與演算法研究
-</div>
-</section>
-
-<section id="learning">
-<h1>📚 學習歷程</h1>
-<div class="card">
-資訊競賽、AI專案、技術探索紀錄
-</div>
-</section>
-
-<section id="contact">
-<h1>📬 聯絡</h1>
-<div class="card">
-GitHub：  
-<a href="https://github.com/orange0730" style="color:#38bdf8;">
-github.com/orange0730
-</a>
-</div>
 </section>
 
 <footer>
-© 2026 Orange0730 Portfolio
+© Orange0730 Portfolio
 </footer>
 
-</div>
 </body>
 </html>
