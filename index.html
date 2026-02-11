@@ -2,137 +2,113 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>orange0730_site</title>
+<title>Orange0730 Portfolio</title>
 
 <style>
 body{
-    margin:0;
-    font-family: "Segoe UI",sans-serif;
-    display:flex;
+margin:0;
+font-family:Segoe UI;
+display:flex;
+background:#0f172a;
+color:white;
 }
 
-/* 側欄 */
+/* 側邊欄 */
 .sidebar{
-    width:230px;
-    height:100vh;
-    background:#1e293b;
-    color:white;
-    padding:20px;
-    position:fixed;
+width:230px;
+height:100vh;
+background:#020617;
+padding:20px;
+position:fixed;
 }
 
 .sidebar h2{
-    text-align:center;
+color:#38bdf8;
 }
 
 .sidebar a{
-    display:block;
-    color:#cbd5e1;
-    padding:10px;
-    text-decoration:none;
-    border-radius:8px;
+display:block;
+color:#94a3b8;
+padding:10px;
+text-decoration:none;
+border-radius:8px;
 }
 
 .sidebar a:hover{
-    background:#334155;
-    color:white;
+background:#1e293b;
+color:white;
 }
 
 /* 主內容 */
 .main{
-    margin-left:250px;
-    padding:40px;
-    flex:1;
-}
-
-section{
-    margin-bottom:60px;
+margin-left:250px;
+padding:40px;
 }
 
 .card{
-    background:#f1f5f9;
-    padding:20px;
-    border-radius:15px;
-    margin-top:15px;
-}
-
-footer{
-    text-align:center;
-    margin-top:50px;
-    color:gray;
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 側欄 -->
 <div class="sidebar">
-    <h2>我的網站</h2>
-    <a href="#about">關於我</a>
-    <a href="#projects">專案作品</a>
-    <a href="#coding">競程與學習</a>
-    <a href="#contact">聯絡方式</a>
+<h2>Orange0730</h2>
+<a href="#about">關於我</a>
+<a href="#projects">專案</a>
+<a href="#coding">競程</a>
+<a href="#learning">學習歷程</a>
+<a href="#contact">聯絡</a>
 </div>
 
-<!-- 主畫面 -->
 <div class="main">
 
+<h1>🚀 我的技術作品集</h1>
+
 <section id="about">
-<h1>👋 關於我</h1>
 <div class="card">
-我是資訊領域學習者，專注於：
+<h2>關於我</h2>
+資訊領域學習者，專注：
 
-<ul>
-<li>C++ 演算法與競程</li>
-<li>AI 與軟體開發</li>
-<li>App / Web 專案</li>
-</ul>
-
-這個網站主要展示：
-
-✔ 技術作品  
-✔ 學習歷程  
-✔ 專案成果  
+• C++競程  
+• AI開發  
+• 軟體專案  
 </div>
 </section>
 
 <section id="projects">
-<h1>🚀 專案作品</h1>
 <div class="card">
-<h3>Chess AI</h3>
-<p>棋類 AI 訓練專案，包含演算法優化與模型訓練。</p>
-</div>
-
-<div class="card">
-<h3>CampusBuddy App</h3>
-<p>校園互動 App，整合聊天、論壇與集點功能。</p>
+<h2>專案</h2>
+Chess AI / CampusBuddy / AI應用
 </div>
 </section>
 
 <section id="coding">
-<h1>💻 競程與學習</h1>
 <div class="card">
-<ul>
-<li>APCS / CPE 練習</li>
-<li>CSES / Codeforces 題解</li>
-<li>演算法與資料結構研究</li>
-</ul>
+<h2>競程</h2>
+CSES / Codeforces / APCS / CPE
+</div>
+</section>
+
+<section id="learning">
+<div class="card">
+<h2>學習歷程</h2>
+競賽、課程、專題紀錄
 </div>
 </section>
 
 <section id="contact">
-<h1>📬 聯絡方式</h1>
 <div class="card">
-GitHub：<br>
-<a href="#">https://github.com/orange0730</a>
+<h2>聯絡</h2>
+GitHub：orange0730
 </div>
 </section>
-
-<footer>
-© 2026 我的個人網站
-</footer>
 
 </div>
 </body>
 </html>
+
