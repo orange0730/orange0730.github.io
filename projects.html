@@ -47,7 +47,7 @@
           專案 &amp; <span class="gradient-text">服務</span>
         </h1>
         <p class="page-hero-desc">
-          [在這裡說明你做專案的動機或方向。例如：你喜歡解決什麼類型的問題？你的作品通常有什麼共同特點？讓訪客在看作品之前就有所期待。]
+          喜歡用程式解決真實生活中的問題。不論是幫同學自動點餐的 Bot、分析棋局的 Web App，還是黑客松的 AI 城市助理，每個專案背後都有一個「這個不做很麻煩」的起點。
         </p>
       </div>
     </div>
@@ -79,121 +79,128 @@
 
       <div class="projects-full-grid stagger">
 
-        <!-- ── 專案卡 1 ─────────────────────── -->
-        <article class="proj-card" data-cat="webapp">
-          <div class="proj-card-cover proj-bg-1">[縮寫]</div>
-          <span class="proj-status">上線中</span>
-          <div class="proj-card-body">
-            <div class="card-label">[類型，如 Web App / 開源工具]</div>
-            <h3 class="card-title">[專案名稱 1]</h3>
-            <p class="card-desc">
-              [專案描述：這個專案解決了什麼問題？有什麼特別的技術或設計決策？用戶體驗如何？讓訪客想要馬上試用。]
-            </p>
-            <div class="card-footer">
-              <div class="card-tags">
-                <span class="tech-tag">[技術 1]</span>
-                <span class="tech-tag">[技術 2]</span>
-                <span class="tech-tag">[技術 3]</span>
-              </div>
-              <div style="display:flex; gap:8px; flex-shrink:0;">
-                <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
-                <a href="#" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Demo →</a>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ── 專案卡 2 ─────────────────────── -->
-        <article class="proj-card" data-cat="tool">
-          <div class="proj-card-cover proj-bg-2">[縮寫]</div>
-          <span class="proj-status">上線中</span>
-          <div class="proj-card-body">
-            <div class="card-label">[類型]</div>
-            <h3 class="card-title">[專案名稱 2]</h3>
-            <p class="card-desc">
-              [描述...]
-            </p>
-            <div class="card-footer">
-              <div class="card-tags">
-                <span class="tech-tag">[技術 1]</span>
-                <span class="tech-tag">[技術 2]</span>
-              </div>
-              <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- ── 專案卡 3 ─────────────────────── -->
-        <article class="proj-card" data-cat="research">
-          <div class="proj-card-cover proj-bg-3">[縮寫]</div>
-          <span class="proj-status wip">進行中</span>
-          <div class="proj-card-body">
-            <div class="card-label">[類型]</div>
-            <h3 class="card-title">[專案名稱 3]</h3>
-            <p class="card-desc">
-              [描述...]
-            </p>
-            <div class="card-footer">
-              <div class="card-tags">
-                <span class="tech-tag">[技術]</span>
-              </div>
-              <a href="#" class="card-link">了解更多 →</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- ── 專案卡 4 ─────────────────────── -->
+        <!-- ── ChessDNA ────────────────────── -->
         <article class="proj-card" data-cat="webapp,tool">
-          <div class="proj-card-cover" style="background: linear-gradient(135deg, #1e1b4b, #06b6d4); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.2);">[縮]</div>
+          <div class="proj-card-cover proj-bg-1">DNA</div>
+          <span class="proj-status">開發中</span>
           <div class="proj-card-body">
-            <div class="card-label">[類型]</div>
-            <h3 class="card-title">[專案名稱 4]</h3>
+            <div class="card-label">Web App / 分析工具</div>
+            <h3 class="card-title">ChessDNA — 棋局分析平台</h3>
             <p class="card-desc">
-              [描述...]
+              輸入 Lichess 或 Chess.com 帳號，自動抓取棋局並用 Stockfish 引擎深度分析，計算 CPL、accuracy、錯誤分類等棋力指標，並建立個人棋風特徵模型。支援 CLI 與 Web UI 兩種介面。
             </p>
             <div class="card-footer">
               <div class="card-tags">
-                <span class="tech-tag">[技術 1]</span>
-                <span class="tech-tag">[技術 2]</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">FastAPI</span>
+                <span class="tech-tag">Stockfish</span>
               </div>
-              <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://github.com/orange0730/ChessDNA" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub →</a>
             </div>
           </div>
         </article>
 
-        <!-- ── 專案卡 5 ─────────────────────── -->
-        <article class="proj-card" data-cat="other">
-          <div class="proj-card-cover" style="background: linear-gradient(135deg, #431407, #7c2d12); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.2);">[縮]</div>
+        <!-- ── YTP 城市智慧助理 ─────────────── -->
+        <article class="proj-card" data-cat="webapp,research">
+          <div class="proj-card-cover proj-bg-2">YTP</div>
+          <span class="proj-status">作品集</span>
           <div class="proj-card-body">
-            <div class="card-label">[類型]</div>
-            <h3 class="card-title">[專案名稱 5]</h3>
-            <p class="card-desc">[描述...]</p>
+            <div class="card-label">AI 應用 / 黑客松作品</div>
+            <h3 class="card-title">YTP 城市智慧助理</h3>
+            <p class="card-desc">
+              整合 RAG 知識庫、AI Agent 工具調用與 TDX 交通即時資料，提供 SSE 流式 AI 推薦與地理資訊視覺化。入選高雄市第五屆黑客松決賽，主題為挖掘城市在地隱藏地點。
+            </p>
             <div class="card-footer">
               <div class="card-tags">
-                <span class="tech-tag">[技術]</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">RAG</span>
+                <span class="tech-tag">TDX API</span>
               </div>
-              <a href="#" class="card-link">了解更多 →</a>
+              <a href="https://github.com/orange0730/ytp-hackDemo" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub →</a>
             </div>
           </div>
         </article>
 
-        <!-- ── 專案卡 6 ─────────────────────── -->
+        <!-- ── ChessAI ──────────────────────── -->
+        <article class="proj-card" data-cat="research">
+          <div class="proj-card-cover proj-bg-3">♟</div>
+          <span class="proj-status wip">研究中</span>
+          <div class="proj-card-body">
+            <div class="card-label">研究 / AI 訓練</div>
+            <h3 class="card-title">ChessAI — 棋局 AI 研究</h3>
+            <p class="card-desc">
+              以 Stockfish 為基礎探索棋局評估與 AI 訓練，結合 ChessDNA 的分析資料進行進階棋風建模研究，探索輕量級棋風偏好特徵的可能性。
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Stockfish</span>
+              </div>
+              <a href="https://github.com/orange0730/chessAI" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── LMSH 點餐 Bot ───────────────── -->
         <article class="proj-card" data-cat="tool">
-          <div class="proj-card-cover" style="background: linear-gradient(135deg, #14532d, #166534); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.2);">[縮]</div>
+          <div class="proj-card-cover" style="background: linear-gradient(135deg, #064e3b, #065f46); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.22);">BOT</div>
+          <span class="proj-status">運行中</span>
           <div class="proj-card-body">
-            <div class="card-label">[類型]</div>
-            <h3 class="card-title">[專案名稱 6]</h3>
-            <p class="card-desc">[描述...]</p>
+            <div class="card-label">Discord Bot / 自動化工具</div>
+            <h3 class="card-title">黎明高中點餐 Bot</h3>
+            <p class="card-desc">
+              替同學自動完成每週午餐點餐，以 Fernet 對稱加密安全存儲學生憑證，透過 Discord 斜線指令選餐確認，省去手動登入點餐的麻煩。（原始碼不公開，保護學生資料安全）
+            </p>
             <div class="card-footer">
               <div class="card-tags">
-                <span class="tech-tag">[技術]</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Discord.py</span>
+                <span class="tech-tag">Fernet</span>
               </div>
-              <a href="#" class="btn btn-ghost btn-sm">GitHub</a>
+              <span class="card-link" style="color: var(--t3); cursor: default;">私有 repo</span>
             </div>
           </div>
         </article>
 
-        <!-- 複製上方卡片的程式碼來新增更多專案 -->
+        <!-- ── MockLocationJoystick ───────────── -->
+        <article class="proj-card" data-cat="tool">
+          <div class="proj-card-cover" style="background: linear-gradient(135deg, #431407, #9a3412); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.22);">GPS</div>
+          <span class="proj-status">完成</span>
+          <div class="proj-card-body">
+            <div class="card-label">Android App</div>
+            <h3 class="card-title">MockLocationJoystick</h3>
+            <p class="card-desc">
+              Android 手機 GPS 模擬應用，搭配搖桿介面可動態操控模擬座標，方便開發者在不移動實機的情況下測試地圖相關功能。
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">Kotlin</span>
+                <span class="tech-tag">Android</span>
+              </div>
+              <span class="card-link" style="color: var(--t3); cursor: default;">未公開</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── MocLocation ─────────────────── -->
+        <article class="proj-card" data-cat="tool">
+          <div class="proj-card-cover" style="background: linear-gradient(135deg, #1e3a5f, #1e40af); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.22);">ADB</div>
+          <span class="proj-status">完成</span>
+          <div class="proj-card-body">
+            <div class="card-label">Python CLI 工具</div>
+            <h3 class="card-title">MocLocation — ADB 定位模擬</h3>
+            <p class="card-desc">
+              在電腦端透過 ADB 指令控制 Android 裝置的 GPS 模擬座標，支援自訂廣播包名，適用 Fake GPS Joystick 等各類模擬位置應用程式。
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">ADB</span>
+              </div>
+              <span class="card-link" style="color: var(--t3); cursor: default;">未公開</span>
+            </div>
+          </div>
+        </article>
 
       </div>
     </div>
@@ -219,36 +226,36 @@
         <!-- 服務 1 -->
         <div class="service-card">
           <div class="service-num">01</div>
-          <h3 class="service-title">[服務項目 1]</h3>
+          <h3 class="service-title">演算法競賽輔導</h3>
           <p class="service-desc">
-            [服務描述：說明這個服務的內容、交付物或適合哪類客戶。讓潛在客戶知道他們能得到什麼。]
+            針對 APCS、資訊奧林匹亞、校內外程式競賽提供一對一或小組備考輔導，從題型解析到解題思路，幫你建立完整的競程知識框架。
           </p>
         </div>
 
         <!-- 服務 2 -->
         <div class="service-card">
           <div class="service-num">02</div>
-          <h3 class="service-title">[服務項目 2]</h3>
+          <h3 class="service-title">Discord Bot 開發</h3>
           <p class="service-desc">
-            [服務描述...]
+            客製化 Discord Bot，包含自動化流程、資料查詢、排程任務、互動介面等功能，適合社群管理、班級/社團自動化或各種創意用途。
           </p>
         </div>
 
         <!-- 服務 3 -->
         <div class="service-card">
           <div class="service-num">03</div>
-          <h3 class="service-title">[服務項目 3]</h3>
+          <h3 class="service-title">Python 自動化工具</h3>
           <p class="service-desc">
-            [服務描述...]
+            開發客製化 Python 腳本與自動化工具，包含網頁爬蟲、資料處理、API 串接、定時任務等，把重複性的手工作業交給程式來跑。
           </p>
         </div>
 
         <!-- 服務 4 -->
         <div class="service-card">
           <div class="service-num">04</div>
-          <h3 class="service-title">[服務項目 4]</h3>
+          <h3 class="service-title">程式基礎家教</h3>
           <p class="service-desc">
-            [服務描述...]
+            針對 C++ / Python 初學者提供一對一教學，從語法基礎到解題邏輯循序漸進。有豐富的教學與教材設計經驗，擅長把複雜概念說得淺顯易懂。
           </p>
         </div>
 
@@ -303,7 +310,7 @@
             <span class="logo-name">吳東橙</span>
             <span class="logo-bracket">&nbsp;/&gt;</span>
           </a>
-          <p class="footer-tagline">[一句話描述你自己或你的網站]</p>
+          <p class="footer-tagline">競程 × 教學 × 開源工具</p>
         </div>
         <div class="footer-links">
           <div class="footer-col">
