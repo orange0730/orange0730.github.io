@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhantomOS — Ghost Shell v2.4</title>
+<style>
+  :root {
+    --bg: #000;
+    --fg: #00ff41;
+    --fg2: #00cc33;
+    --fg3: #006614;
+    --dim: #004d14;
+    --prompt: #00ff88;
+    --err: #ff4444;
+    --warn: #ffaa00;
+    --info: #00aaff;
+    --highlight: #ffffff;
+    --crt-opacity: 0.03;
+    --glow: 0 0 8px var(--fg), 0 0 16px var(--fg2);
+  }
+  .theme-cyan   { --fg:#00ffff; --fg2:#00cccc; --fg3:#006666; --dim:#003333; --prompt:#00ffcc; }
+  .theme-amber  { --fg:#ffb000; --fg2:#cc8800; --fg3:#664400; --dim:#332200; --prompt:#ffd000; }
+  .theme-red    { --fg:#ff3333; --fg2:#cc1111; --fg3:#660000; --dim:#330000; --prompt:#ff6666; }
+  .theme-white  { --fg:#e0e0e0; --fg2:#aaaaaa; --fg3:#555555; --dim:#222222; --prompt:#ffffff; }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  /* ── MATRIX CANVAS ── */
+  #matrixCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  /* ── CRT ── */
+  #crt {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,var(--crt-opacity)) 2px,
+      rgba(0,0,0,var(--crt-opacity)) 4px
+    );
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .screen.hidden { display: none; }
+
+  /* ── BOOT ── */
+  #bootScreen {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px 40px;
+    overflow: hidden;
+  }
+  #bootLog {
+    font-size: 12px;
+    color: var(--fg2);
+    width: 100%;
+    max-width: 900px;
+    white-space: pre-wrap;
+  }
+  #bootLog .ok   { color: #00ff41; }
+  #bootLog .warn { color: #ffaa00; }
+  #bootLog .fail { color: #ff4444; }
+  #bootBar {
+    margin-top: 16px;
+    width: 100%;
+    max-width: 600px;
+    height: 4px;
+    background: var(--dim);
+    border-radius: 2px;
+  }
+  #bootBarFill {
+    height: 100%;
+    background: var(--fg);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: var(--glow);
+  }
+
+  /* ── LOGIN ── */
+  #loginScreen { gap: 24px; }
+  #loginAscii {
+    color: var(--fg);
+    font-size: clamp(8px, 1.2vw, 13px);
+    text-shadow: var(--glow);
+    white-space: pre;
+    text-align: center;
+    line-height: 1.2;
+  }
+  #loginForm { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  #loginPrompt { color: var(--fg2); font-size: 13px; }
+  #loginInput {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--fg3);
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 15px;
+    text-align: center;
+    width: 240px;
+    outline: none;
+    caret-color: var(--fg);
+  }
+  #loginInput:focus { border-bottom-color: var(--fg); box-shadow: 0 2px 8px var(--fg3); }
+  #loginHint { color: var(--fg3); font-size: 11px; }
+
+  /* ── DESKTOP ── */
+  #desktop {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* status bar top */
+  #statusBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 16px;
+    background: rgba(0,0,0,0.7);
+    border-bottom: 1px solid var(--fg3);
+    font-size: 11px;
+    color: var(--fg2);
+    flex-shrink: 0;
+    z-index: 20;
+  }
+  #statusBar .sb-left { display: flex; gap: 16px; align-items: center; }
+  #statusBar .sb-right { display: flex; gap: 16px; align-items: center; }
+  #sbLevel { color: var(--fg); font-weight: bold; }
+  #sbXpBar {
+    display: inline-block;
+    width: 80px;
+    height: 6px;
+    background: var(--dim);
+    border-radius: 3px;
+    vertical-align: middle;
+    overflow: hidden;
+  }
+  #sbXpFill {
+    height: 100%;
+    background: var(--fg);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  #sbCredits { color: var(--warn); }
+  #sbTime { color: var(--fg3); }
+  #sbNet { color: var(--info); }
+
+  /* desktop icons area */
+  #desktopArea {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  #iconGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 20px;
+    align-items: flex-start;
+  }
+  .desk-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 6px;
+    width: 72px;
+    transition: background 0.15s;
+  }
+  .desk-icon:hover { background: rgba(0,255,65,0.08); }
+  .desk-icon:active { background: rgba(0,255,65,0.18); }
+  .desk-icon .icon-glyph { font-size: 28px; line-height: 1; filter: drop-shadow(0 0 4px var(--fg)); }
+  .desk-icon .icon-label { font-size: 10px; color: var(--fg2); text-align: center; }
+
+  /* NPC panel */
+  #npcPanel {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: 220px;
+    background: rgba(0,10,0,0.85);
+    border: 1px solid var(--fg3);
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  #npcHeader {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--fg3);
+    color: var(--fg2);
+    display: flex;
+    justify-content: space-between;
+  }
+  #npcTitle { color: var(--fg); }
+  #npcOnline { color: var(--info); }
+  #npcLog {
+    height: 180px;
+    overflow-y: auto;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .npc-msg { color: var(--fg2); }
+  .npc-msg .npc-name { color: var(--prompt); }
+  .npc-msg .npc-sys  { color: var(--fg3); font-style: italic; }
+
+  /* taskbar */
+  #taskbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    background: rgba(0,0,0,0.85);
+    border-top: 1px solid var(--fg3);
+    flex-shrink: 0;
+    z-index: 20;
+  }
+  #tbApps { display: flex; gap: 8px; }
+  .tb-btn {
+    background: transparent;
+    border: 1px solid var(--fg3);
+    color: var(--fg2);
+    font-family: inherit;
+    font-size: 11px;
+    padding: 3px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover { border-color: var(--fg); color: var(--fg); background: rgba(0,255,65,0.06); }
+  .tb-btn.active { border-color: var(--fg); color: var(--fg); background: rgba(0,255,65,0.12); }
+  #tbRight { display: flex; gap: 8px; align-items: center; }
+  #tbClock { color: var(--fg3); font-size: 11px; }
+
+  /* ── WINDOWS ── */
+  .win {
+    position: absolute;
+    background: rgba(0,5,0,0.95);
+    border: 1px solid var(--fg3);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 30;
+    box-shadow: 0 0 24px rgba(0,255,65,0.08);
+  }
+  .win.hidden { display: none; }
+  .win-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    background: rgba(0,20,0,0.9);
+    border-bottom: 1px solid var(--fg3);
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .win-title { font-size: 11px; color: var(--fg2); }
+  .win-btns { display: flex; gap: 6px; }
+  .win-btn {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .win-btn-close { background: #ff4444; }
+  .win-btn-close:hover { background: #ff6666; }
+  .win-btn-min { background: #ffaa00; }
+  .win-btn-min:hover { background: #ffcc00; }
+
+  /* ── TERMINAL WINDOW ── */
+  #termWin {
+    left: 10%; top: 6%;
+    width: 68%; height: 82%;
+    min-width: 480px;
+    min-height: 300px;
+  }
+  #termBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 13px;
+  }
+  .term-line { white-space: pre-wrap; word-break: break-all; }
+  .term-line.err   { color: var(--err); }
+  .term-line.warn  { color: var(--warn); }
+  .term-line.info  { color: var(--info); }
+  .term-line.ok    { color: #00ff88; }
+  .term-line.dim   { color: var(--fg3); }
+  .term-line.hi    { color: var(--highlight); }
+  .term-line.sys   { color: var(--prompt); }
+  .term-line.ascii { color: var(--fg2); white-space: pre; line-height: 1.2; }
+
+  #termInputRow {
+    display: flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-top: 1px solid var(--fg3);
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  #termPromptTxt { color: var(--prompt); font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+  #termInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    caret-color: var(--fg);
+  }
+
+  /* ── MARKET WINDOW ── */
+  #marketWin {
+    left: 20%; top: 10%;
+    width: 500px;
+    height: 480px;
+  }
+  #marketBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .market-item {
+    border: 1px solid var(--fg3);
+    border-radius: 4px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.15s;
+  }
+  .market-item:hover { border-color: var(--fg2); }
+  .mi-info { display: flex; flex-direction: column; gap: 3px; }
+  .mi-name { color: var(--fg); font-size: 13px; }
+  .mi-desc { color: var(--fg3); font-size: 11px; }
+  .mi-owned { color: var(--warn); font-size: 10px; }
+  .mi-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .mi-price { color: var(--warn); font-size: 13px; }
+  .mi-buy {
+    background: transparent;
+    border: 1px solid var(--fg);
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 11px;
+    padding: 4px 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .mi-buy:hover { background: rgba(0,255,65,0.12); }
+  .mi-buy:disabled { border-color: var(--fg3); color: var(--fg3); cursor: not-allowed; }
+  #marketCreditsDisplay {
+    padding: 8px 14px;
+    border-top: 1px solid var(--fg3);
+    color: var(--warn);
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── MISSIONS WINDOW ── */
+  #missionsWin {
+    left: 25%; top: 12%;
+    width: 500px;
+    height: 460px;
+  }
+  #missionsBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mission-card {
+    border: 1px solid var(--fg3);
+    border-radius: 4px;
+    padding: 10px 14px;
+    transition: border-color 0.15s;
+  }
+  .mission-card:hover { border-color: var(--fg2); }
+  .mission-card.done { opacity: 0.5; border-color: var(--dim); }
+  .mc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .mc-title { color: var(--fg); font-size: 13px; }
+  .mc-reward { color: var(--warn); font-size: 11px; }
+  .mc-desc { color: var(--fg3); font-size: 11px; margin-bottom: 8px; }
+  .mc-status { font-size: 10px; color: var(--fg2); }
+  .mc-status.done { color: #00ff88; }
+  .mc-accept {
+    background: transparent;
+    border: 1px solid var(--fg2);
+    color: var(--fg2);
+    font-family: inherit;
+    font-size: 11px;
+    padding: 3px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .mc-accept:hover { border-color: var(--fg); color: var(--fg); }
+
+  /* ── PROGRESS BAR (hack anim) ── */
+  .progress-wrap {
+    margin: 4px 0;
+    color: var(--fg2);
+    font-size: 12px;
+  }
+  .progress-track {
+    display: inline-block;
+    width: 260px;
+    height: 8px;
+    background: var(--dim);
+    border-radius: 4px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin: 0 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--fg);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.08s linear;
+    box-shadow: 0 0 4px var(--fg);
+  }
+
+  /* ── SCROLLBARS ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--fg2); }
+
+  /* ── GLITCH ANIM ── */
+  @keyframes glitch {
+    0%   { transform: none; clip-path: none; }
+    20%  { transform: skewX(3deg); clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); }
+    40%  { transform: skewX(-3deg) translateX(4px); clip-path: polygon(0 55%, 100% 55%, 100% 70%, 0 70%); }
+    60%  { transform: none; clip-path: none; }
+    80%  { transform: translateX(-3px); clip-path: polygon(0 5%, 100% 5%, 100% 15%, 0 15%); }
+    100% { transform: none; clip-path: none; }
+  }
+  .glitch-anim { animation: glitch 0.3s steps(2, end); }
+
+  /* ── BLINK ── */
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .blink { animation: blink 1s step-end infinite; }
+
+  /* ── SCANLINE FLICKER ── */
+  @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.97} }
+  body { animation: flicker 4s ease-in-out infinite; }
+
+  /* resize handle */
+  .win-resize {
+    position: absolute;
+    right: 0; bottom: 0;
+    width: 14px; height: 14px;
+    cursor: se-resize;
+    opacity: 0.4;
+    font-size: 10px;
+    color: var(--fg3);
+    display: flex; align-items: flex-end; justify-content: flex-end;
+    padding: 2px;
+  }
+
+  /* mobile warning */
+  #mobileWarn {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    padding: 32px;
+    text-align: center;
+    color: var(--fg2);
+    font-size: 13px;
+  }
+  @media (max-width: 600px) { #mobileWarn { display: flex; } }
+</style>
+</head>
+<body>
+
+<!-- Mobile warning -->
+<div id="mobileWarn">
+  <div style="font-size:32px">⚠</div>
+  <div style="color:var(--fg);font-size:16px">PhantomOS needs a bigger screen</div>
+  <div>請在桌面瀏覽器上體驗 PhantomOS<br>建議解析度：1024×768 或以上</div>
+  <div style="color:var(--fg3);font-size:11px">[ PhantomOS-zero v2.4 ]</div>
+</div>
+
+<!-- Matrix canvas -->
+<canvas id="matrixCanvas"></canvas>
+<!-- CRT overlay -->
+<div id="crt"></div>
+
+<!-- ═══════════════════ BOOT SCREEN ═══════════════════ -->
+<div class="screen" id="bootScreen">
+  <pre id="bootLog"></pre>
+  <div id="bootBar"><div id="bootBarFill"></div></div>
+</div>
+
+<!-- ═══════════════════ LOGIN SCREEN ═══════════════════ -->
+<div class="screen hidden" id="loginScreen">
+  <pre id="loginAscii">
+██████╗ ██╗  ██╗ █████╗ ███╗   ██╗████████╗ ██████╗ ███╗   ███╗ ██████╗ ███████╗
+██╔══██╗██║  ██║██╔══██╗████╗  ██║╚══██╔══╝██╔═══██╗████╗ ████║██╔═══██╗██╔════╝
+██████╔╝███████║███████║██╔██╗ ██║   ██║   ██║   ██║██╔████╔██║██║   ██║███████╗
+██╔═══╝ ██╔══██║██╔══██║██║╚██╗██║   ██║   ██║   ██║██║╚██╔╝██║██║   ██║╚════██║
+██║     ██║  ██║██║  ██║██║ ╚████║   ██║   ╚██████╔╝██║ ╚═╝ ██║╚██████╔╝███████║
+╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚══════╝
+                                                    Ghost Shell  v2.4 — DARK NET EDITION</pre>
+  <div id="loginForm">
+    <div id="loginPrompt">ghost@phantom:~$ login <span class="blink">_</span></div>
+    <input id="loginInput" type="text" placeholder="enter callsign" maxlength="20" autocomplete="off" spellcheck="false">
+    <div id="loginHint">[ press ENTER to authenticate ]</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ DESKTOP ═══════════════════ -->
+<div class="screen hidden" id="desktop">
+
+  <!-- Status Bar -->
+  <div id="statusBar">
+    <div class="sb-left">
+      <span>👤 <span id="sbUser">ghost</span></span>
+      <span id="sbLevel">LVL 1</span>
+      <span><span id="sbXpBar"><span id="sbXpFill" style="width:0%"></span></span> <span id="sbXpTxt">0/100 XP</span></span>
+    </div>
+    <div class="sb-right">
+      <span id="sbCredits">💰 0 cr</span>
+      <span id="sbNet">📡 OFFLINE</span>
+      <span id="sbTime">00:00:00</span>
+    </div>
+  </div>
+
+  <!-- Desktop area -->
+  <div id="desktopArea">
+    <div id="iconGrid">
+      <div class="desk-icon" onclick="openWin('termWin','termBtn')">
+        <div class="icon-glyph">💻</div>
+        <div class="icon-label">Terminal</div>
+      </div>
+      <div class="desk-icon" onclick="openWin('marketWin','marketBtn')">
+        <div class="icon-glyph">🛒</div>
+        <div class="icon-label">Black Market</div>
+      </div>
+      <div class="desk-icon" onclick="openWin('missionsWin','missBtn')">
+        <div class="icon-glyph">📋</div>
+        <div class="icon-label">Missions</div>
+      </div>
+    </div>
+
+    <!-- NPC Panel -->
+    <div id="npcPanel">
+      <div id="npcHeader">
+        <span id="npcTitle">▶ DARKNET CHAT</span>
+        <span id="npcOnline">● <span id="npcCount">3</span> online</span>
+      </div>
+      <div id="npcLog"></div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <div id="taskbar">
+    <div id="tbApps">
+      <button class="tb-btn" id="termBtn" onclick="toggleWin('termWin','termBtn')">💻 Terminal</button>
+      <button class="tb-btn" id="marketBtn" onclick="toggleWin('marketWin','marketBtn')">🛒 Market</button>
+      <button class="tb-btn" id="missBtn" onclick="toggleWin('missionsWin','missBtn')">📋 Missions</button>
+    </div>
+    <div id="tbRight">
+      <span id="tbClock">00:00</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TERMINAL WINDOW ═══════════════════ -->
+<div class="win" id="termWin">
+  <div class="win-titlebar">
+    <span class="win-title">phantom-term — /home/<span id="twUser">ghost</span></span>
+    <div class="win-btns">
+      <button class="win-btn win-btn-min"  onclick="minWin('termWin','termBtn')">–</button>
+      <button class="win-btn win-btn-close" onclick="closeWin('termWin','termBtn')">✕</button>
+    </div>
+  </div>
+  <div id="termBody"></div>
+  <div id="termInputRow">
+    <span id="termPromptTxt">ghost@phantom:~$ </span>
+    <input id="termInput" type="text" autocomplete="off" spellcheck="false" autofocus>
+  </div>
+  <div class="win-resize">◢</div>
+</div>
+
+<!-- ═══════════════════ MARKET WINDOW ═══════════════════ -->
+<div class="win hidden" id="marketWin">
+  <div class="win-titlebar">
+    <span class="win-title">🛒 Black Market — Anonymous Node</span>
+    <div class="win-btns">
+      <button class="win-btn win-btn-min"  onclick="minWin('marketWin','marketBtn')">–</button>
+      <button class="win-btn win-btn-close" onclick="closeWin('marketWin','marketBtn')">✕</button>
+    </div>
+  </div>
+  <div id="marketBody"></div>
+  <div id="marketCreditsDisplay">Balance: <span id="marketCredAmt">0</span> cr</div>
+  <div class="win-resize">◢</div>
+</div>
+
+<!-- ═══════════════════ MISSIONS WINDOW ═══════════════════ -->
+<div class="win hidden" id="missionsWin">
+  <div class="win-titlebar">
+    <span class="win-title">📋 Mission Board</span>
+    <div class="win-btns">
+      <button class="win-btn win-btn-min"  onclick="minWin('missionsWin','missBtn')">–</button>
+      <button class="win-btn win-btn-close" onclick="closeWin('missionsWin','missBtn')">✕</button>
+    </div>
+  </div>
+  <div id="missionsBody"></div>
+  <div class="win-resize">◢</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   PHANTOM OS  v2.4  —  Ghost Shell Dark Net Edition
+   Single-file, no dependencies, localStorage state
+═══════════════════════════════════════════════════════════ */
+
+// ── STATE ──────────────────────────────────────────────────
+const DEFAULT_STATE = {
+  username: 'ghost',
+  credits: 150,
+  xp: 0,
+  level: 1,
+  inventory: [],       // item ids
+  hackScore: {},       // target -> highest success %
+  missions: {},        // mission id -> 'active'|'done'
+  cwd: '/home/ghost',
+  theme: 'green',
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('phantom_state_v2');
+    return s ? { ...DEFAULT_STATE, ...JSON.parse(s) } : { ...DEFAULT_STATE };
+  } catch { return { ...DEFAULT_STATE }; }
+}
+function saveState() {
+  try { localStorage.setItem('phantom_state_v2', JSON.stringify(state)); } catch {}
+}
+
+let state = loadState();
+
+// ── MARKET ITEMS ───────────────────────────────────────────
+const MARKET_ITEMS = [
+  { id:'basic_scanner',   name:'Basic Scanner',      price:50,  desc:'Boost hack success +10%',    effect:'+10% hack', icon:'🔍' },
+  { id:'adv_cracker',     name:'Advanced Cracker',   price:120, desc:'Boost hack success +30%',    effect:'+30% hack', icon:'🔓' },
+  { id:'stealth_module',  name:'Stealth Module',     price:80,  desc:'Reduce detection risk -40%', effect:'-40% detect', icon:'🥷' },
+  { id:'root_kit',        name:'Root Kit',           price:200, desc:'Unlock /secret directory',   effect:'unlock /secret', icon:'🗝️' },
+  { id:'zerod_exploit',   name:'Zero-Day Exploit',   price:350, desc:'Boost hack success +50%',    effect:'+50% hack', icon:'💀' },
+  { id:'ghost_proxy',     name:'Ghost Proxy Chain',  price:95,  desc:'Mask your true IP address',  effect:'anonymous', icon:'👻' },
+  { id:'keylogger',       name:'Keylogger v3',       price:60,  desc:'Capture credentials silently', effect:'credential dump', icon:'⌨️' },
+  { id:'wifi_cracker',    name:'Wi-Fi Cracker',      price:110, desc:'Break WPA2 encryption',       effect:'+25% wifi hack', icon:'📶' },
+];
+
+// ── MISSIONS ───────────────────────────────────────────────
+const MISSIONS = [
+  { id:'m1', title:'First Blood',        reward:30,  xp:50,  desc:'Hack any target for the first time.',        check: s => Object.keys(s.hackScore).length > 0 },
+  { id:'m2', title:'System Recon',       reward:50,  xp:80,  desc:'Scan 3 different targets.',                  check: s => Object.keys(s.hackScore).length >= 3 },
+  { id:'m3', title:'Market Visitor',     reward:40,  xp:60,  desc:'Purchase your first item from the market.',  check: s => s.inventory.length > 0 },
+  { id:'m4', title:'Ghost Protocol',     reward:100, xp:150, desc:'Hack a target with ≥80% success rate.',      check: s => Object.values(s.hackScore).some(v => v >= 80) },
+  { id:'m5', title:'Arsenal Collector',  reward:150, xp:200, desc:'Own 3 or more tools.',                       check: s => s.inventory.length >= 3 },
+  { id:'m6', title:'Phantom Elite',      reward:300, xp:400, desc:'Reach Level 5.',                             check: s => s.level >= 5 },
+  { id:'m7', title:'Root Access',        reward:200, xp:250, desc:'Own the Root Kit.',                          check: s => s.inventory.includes('root_kit') },
+  { id:'m8', title:'Deep Cover',         reward:80,  xp:120, desc:'Have the Ghost Proxy and Stealth Module.',   check: s => s.inventory.includes('ghost_proxy') && s.inventory.includes('stealth_module') },
+];
+
+// ── XP / LEVELING ──────────────────────────────────────────
+const XP_TABLE = [0,100,250,450,700,1050,1500,2100,2900,4000];
+function xpForLevel(l) { return XP_TABLE[Math.min(l-1, XP_TABLE.length-1)]; }
+function xpForNext(l) { return XP_TABLE[Math.min(l, XP_TABLE.length-1)]; }
+
+function gainXP(amount) {
+  state.xp += amount;
+  let leveled = false;
+  while (state.level < 10 && state.xp >= xpForNext(state.level)) {
+    state.level++;
+    leveled = true;
+    termPrint(`\n🎉 LEVEL UP! You are now Level ${state.level}!`, 'ok');
+    termPrint(`   Bonus: +${state.level * 20} credits`, 'ok');
+    state.credits += state.level * 20;
+  }
+  updateHUD();
+  saveState();
+  if (leveled) checkMissions();
+}
+
+// ── HUD ─────────────────────────────────────────────────────
+function updateHUD() {
+  document.getElementById('sbUser').textContent = state.username;
+  document.getElementById('twUser').textContent = state.username;
+  document.getElementById('termPromptTxt').textContent = `${state.username}@phantom:${state.cwd}$ `;
+  document.getElementById('sbLevel').textContent = `LVL ${state.level}`;
+  document.getElementById('sbCredits').textContent = `💰 ${state.credits} cr`;
+  const cur = state.xp - xpForLevel(state.level);
+  const next = xpForNext(state.level) - xpForLevel(state.level);
+  const pct = state.level >= 10 ? 100 : Math.round(cur / next * 100);
+  document.getElementById('sbXpFill').style.width = pct + '%';
+  document.getElementById('sbXpTxt').textContent = `${state.xp}/${xpForNext(state.level)} XP`;
+  document.getElementById('marketCredAmt').textContent = state.credits;
+}
+
+// ── CLOCK ───────────────────────────────────────────────────
+function updateClock() {
+  const n = new Date();
+  const hh = String(n.getHours()).padStart(2,'0');
+  const mm = String(n.getMinutes()).padStart(2,'0');
+  const ss = String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('sbTime').textContent = `${hh}:${mm}:${ss}`;
+  document.getElementById('tbClock').textContent = `${hh}:${mm}`;
+}
+setInterval(updateClock, 1000);
+
+// ── VIRTUAL FILESYSTEM ─────────────────────────────────────
+const FS = {
+  '/': ['home','etc','var','tmp','secret'],
+  '/home': ['ghost'],
+  '/home/ghost': ['notes.txt','.bashrc','targets.txt','.hack_history'],
+  '/etc': ['phantom.conf','passwd','shadow'],
+  '/var': ['log'],
+  '/var/log': ['hack.log','syslog'],
+  '/tmp': ['exploit_37.tmp','dropper.sh'],
+  '/secret': ['rootpasswd.txt','classified_ops.txt','master_key.hex'],
+};
+const FILE_CONTENT = {
+  '/home/ghost/notes.txt':
+`# Ghost Notes
+- Study up on SQL injection
+- Ping 192.168.0.1 — seems vulnerable
+- TODO: buy Root Kit from market
+- Credits low... accept more missions
+
+Last login: ${new Date().toLocaleDateString()}`,
+
+  '/home/ghost/.bashrc':
+`# PhantomOS Ghost Shell configuration
+alias ll='ls -la'
+alias c='clear'
+alias h='hack'
+export PHANTOM_LEVEL=${state.level}
+export GHOST_USER=${state.username}
+PS1="\${GHOST_USER}@phantom:\${PWD}$ "`,
+
+  '/home/ghost/targets.txt':
+`# Known Target List
+# Format: IP | Difficulty | Notes
+127.0.0.1         | EASY     | localhost, always accessible
+8.8.8.8           | MEDIUM   | Google DNS, good firewall
+192.168.0.1       | MEDIUM   | LAN router, some exposure
+10.0.0.100        | HARD     | Internal server, patched
+172.16.0.50       | EXTREME  | Unknown — approach with caution`,
+
+  '/home/ghost/.hack_history':
+`# Hack Attempt Log (auto-generated)
+[session records]`,
+
+  '/etc/phantom.conf':
+`[PhantomOS Configuration]
+version = 2.4
+kernel  = ghost-kernel-5.18.0
+net     = darknet-v3
+theme   = green
+loglevel= warn
+max_connections = 8`,
+
+  '/etc/passwd':
+`root:x:0:0:root:/root:/bin/bash
+ghost:x:1000:1000:Ghost User,,,:/home/ghost:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin`,
+
+  '/etc/shadow': `[PERMISSION DENIED] — Root access required`,
+  '/var/log/hack.log': `[hack.log] — session data encrypted`,
+  '/var/log/syslog': `${new Date().toISOString()} kernel: PhantomOS Ghost Shell initialized
+${new Date().toISOString()} net: darknet connection established
+${new Date().toISOString()} auth: user authenticated`,
+  '/tmp/exploit_37.tmp': `ELF 64-bit LSB executable, x86-64, dynamically linked
+[binary data — not printable]`,
+  '/tmp/dropper.sh': `#!/bin/bash\n# WARNING: malicious dropper\nexit 0`,
+  '/secret/rootpasswd.txt': `r00tP@ssw0rd_2024_PHANTOM`,
+  '/secret/classified_ops.txt': `OPERATION: GHOST PROTOCOL\nStatus: ACTIVE\nTarget: classified\n[further details redacted]`,
+  '/secret/master_key.hex': `4d4153544552204b455920\n48455820454e434f444544\n[decryption key for classified ops]`,
+};
+
+// ── HACK TARGETS ────────────────────────────────────────────
+const TARGETS = {
+  '127.0.0.1':    { name:'Localhost',        baseSucc:95, diff:'TRIVIAL',  reward:10,  xp:20  },
+  '8.8.8.8':      { name:'Google DNS',       baseSucc:55, diff:'MEDIUM',   reward:40,  xp:60  },
+  '192.168.0.1':  { name:'LAN Router',       baseSucc:45, diff:'MEDIUM',   reward:55,  xp:80  },
+  '10.0.0.100':   { name:'Internal Server',  baseSucc:25, diff:'HARD',     reward:100, xp:150 },
+  '172.16.0.50':  { name:'Unknown Node',     baseSucc:15, diff:'EXTREME',  reward:200, xp:300 },
+};
+
+function getHackBonus() {
+  let bonus = 0;
+  if (state.inventory.includes('basic_scanner'))  bonus += 10;
+  if (state.inventory.includes('adv_cracker'))    bonus += 30;
+  if (state.inventory.includes('zerod_exploit'))  bonus += 50;
+  if (state.inventory.includes('wifi_cracker'))   bonus += 25;
+  return Math.min(bonus, 50); // cap bonus at +50
+}
+
+// ── NPC BOTS ────────────────────────────────────────────────
+const NPC_NAMES = ['n3cr0m4ncer','z3r0_d4y','gh0st_x','0x4f','cipher_null','v01d'];
+const NPC_MSGS  = [
+  'scanning 10.0.0.0/24...',
+  'anyone got a working exploit for CVE-2024-1337?',
+  'credits low, need missions',
+  'just cracked 8.8.8.8 lol',
+  'stealth module is worth every credit',
+  'careful with 172.16.0.50 — has IDS',
+  'root kit dropped in the market again',
+  'nice, level up!',
+  'who needs a ghost proxy?',
+  'found an 0day. not sharing.',
+  'the matrix has you...',
+  'follow the white rabbit',
+  'knock knock neo',
+  'stay dark, stay ghost',
+  'zero trust, zero trace',
+];
+
+let npcTimer;
+function startNPCBots() {
+  const log = document.getElementById('npcLog');
+  function addNPCMsg() {
+    const name = NPC_NAMES[Math.floor(Math.random() * NPC_NAMES.length)];
+    const msg  = NPC_MSGS[Math.floor(Math.random() * NPC_MSGS.length)];
+    const el = document.createElement('div');
+    el.className = 'npc-msg';
+    el.innerHTML = `<span class="npc-name">[${name}]</span> ${escHtml(msg)}`;
+    log.appendChild(el);
+    if (log.children.length > 40) log.removeChild(log.firstChild);
+    log.scrollTop = log.scrollHeight;
+  }
+  // initial messages
+  for (let i=0; i<3; i++) setTimeout(addNPCMsg, i*600);
+  npcTimer = setInterval(addNPCMsg, 6000 + Math.random()*8000);
+}
+
+function npcSysMsg(txt) {
+  const log = document.getElementById('npcLog');
+  const el = document.createElement('div');
+  el.className = 'npc-msg';
+  el.innerHTML = `<span class="npc-sys">[SYSTEM] ${escHtml(txt)}</span>`;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── TERMINAL ────────────────────────────────────────────────
+const termBody = document.getElementById('termBody');
+const termInput = document.getElementById('termInput');
+let cmdHistory = [], histIdx = -1;
+let isAnimating = false;
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function termPrint(text, cls='', raw=false) {
+  const el = document.createElement('div');
+  el.className = 'term-line' + (cls ? ' '+cls : '');
+  if (raw) el.innerHTML = text;
+  else el.textContent = text;
+  termBody.appendChild(el);
+  termBody.scrollTop = termBody.scrollHeight;
+  return el;
+}
+
+function termPrintRaw(html, cls='') { return termPrint(html, cls, true); }
+
+async function termPrintLines(lines, cls='', delay=18) {
+  for (const l of lines) {
+    termPrint(l, cls);
+    await sleep(delay);
+  }
+}
+
+function termClear() {
+  termBody.innerHTML = '';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Progress bar helper
+async function termProgress(label, ms=1800, steps=40) {
+  const row = document.createElement('div');
+  row.className = 'progress-wrap';
+  row.innerHTML = `${escHtml(label)} <span class="progress-track"><span class="progress-fill" id="pf_${Date.now()}"></span></span> <span class="pf-pct">0%</span>`;
+  termBody.appendChild(row);
+  termBody.scrollTop = termBody.scrollHeight;
+  const fill = row.querySelector('.progress-fill');
+  const pct  = row.querySelector('.pf-pct');
+  for (let i=1; i<=steps; i++) {
+    await sleep(ms / steps);
+    const p = Math.round(i/steps*100);
+    fill.style.width = p+'%';
+    pct.textContent = p+'%';
+  }
+  pct.style.color = 'var(--ok)';
+  return row;
+}
+
+// ── COMMAND HANDLER ────────────────────────────────────────
+const CMD_HANDLERS = {};
+
+function regCmd(names, fn) {
+  for (const n of (Array.isArray(names)?names:[names])) CMD_HANDLERS[n] = fn;
+}
+
+async function runCmd(raw) {
+  if (isAnimating) return;
+  const trimmed = raw.trim();
+  if (!trimmed) return;
+  cmdHistory.unshift(trimmed);
+  if (cmdHistory.length > 100) cmdHistory.pop();
+  histIdx = -1;
+
+  // Echo command
+  termPrintRaw(`<span style="color:var(--prompt)">${escHtml(state.username)}@phantom:${escHtml(state.cwd)}$</span> ${escHtml(trimmed)}`);
+
+  const parts = trimmed.split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+  const args = parts.slice(1);
+
+  if (CMD_HANDLERS[cmd]) {
+    isAnimating = true;
+    try { await CMD_HANDLERS[cmd](args, trimmed); } catch(e) { termPrint('Error: ' + e.message, 'err'); }
+    isAnimating = false;
+  } else {
+    termPrint(`bash: ${cmd}: command not found`, 'err');
+    termPrint(`Type 'help' for available commands.`, 'dim');
+  }
+}
+
+// ── COMMANDS ───────────────────────────────────────────────
+
+regCmd('help', async () => {
+  termPrint('');
+  termPrint('═══════════════════════════════════════════', 'dim');
+  termPrint('  PHANTOM OS — GHOST SHELL  v2.4  COMMANDS', 'sys');
+  termPrint('═══════════════════════════════════════════', 'dim');
+  termPrint('');
+  const sections = [
+    ['SYSTEM',   ['help','clear','whoami','date','uptime','uname','neofetch']],
+    ['FILES',    ['ls [-a]','cd <dir>','pwd','cat <file>','tree']],
+    ['NETWORK',  ['ping <ip>','nmap <ip>','scan <ip>','trace <ip>','status']],
+    ['HACKING',  ['hack <ip>','crack <ip>','decrypt <file>']],
+    ['ECONOMY',  ['shop','buy <item>','inventory','inv','credits','missions']],
+    ['FUN',      ['matrix','glitch','theme <name>','fortune','cowsay <msg>','banner <txt>','nyan','doge','hacktheplanet']],
+    ['MISC',     ['echo <msg>','sudo <cmd>','vim','reboot','exit']],
+  ];
+  for (const [sec, cmds] of sections) {
+    termPrint(`  ─── ${sec} ───`, 'info');
+    termPrint(`    ${cmds.join('   ')}`, 'dim');
+    termPrint('');
+  }
+  termPrint('Themes: green | cyan | amber | red | white', 'dim');
+});
+
+regCmd('clear', () => termClear());
+
+regCmd('whoami', async () => {
+  termPrint(state.username, 'ok');
+  termPrint(`  Level    : ${state.level}`, 'dim');
+  termPrint(`  XP       : ${state.xp}`, 'dim');
+  termPrint(`  Credits  : ${state.credits} cr`, 'dim');
+  termPrint(`  Tools    : ${state.inventory.length || 'none'}`, 'dim');
+});
+
+regCmd('date', async () => { termPrint(new Date().toString()); });
+
+regCmd('uptime', async () => {
+  const s = Math.floor(performance.now()/1000);
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  termPrint(` ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')} up — load avg: 0.${Math.floor(Math.random()*99)}, 0.${Math.floor(Math.random()*99)}, 0.${Math.floor(Math.random()*99)}`);
+});
+
+regCmd('uname', async (args) => {
+  if (args.includes('-a') || args.includes('-r')) {
+    termPrint('PhantomOS ghost-kernel-5.18.0-phantom #1 SMP x86_64 GNU/Linux');
+  } else {
+    termPrint('PhantomOS');
+  }
+});
+
+regCmd('neofetch', async () => {
+  const art = [
+    '   ██████╗ ██╗  ██╗',
+    '   ██╔══██╗██║  ██║',
+    '   ██████╔╝███████║',
+    '   ██╔═══╝ ██╔══██║',
+    '   ██║     ██║  ██║',
+    '   ╚═╝     ╚═╝  ╚═╝',
+  ];
+  const info = [
+    `OS: PhantomOS Ghost Shell v2.4`,
+    `Host: darknet-node-${Math.floor(Math.random()*9000+1000)}`,
+    `Kernel: ghost-kernel-5.18.0`,
+    `Shell: ghost-shell v2.4`,
+    `User: ${state.username} (Level ${state.level})`,
+    `XP: ${state.xp} | Credits: ${state.credits} cr`,
+    `Tools: ${state.inventory.length > 0 ? state.inventory.join(', ') : 'none'}`,
+    `Theme: ${state.theme}`,
+  ];
+  termPrint('');
+  for (let i=0; i<Math.max(art.length, info.length); i++) {
+    const left  = (art[i]  || '                    ').padEnd(20);
+    const right = info[i] || '';
+    termPrintRaw(`<span style="color:var(--fg2)">${escHtml(left)}</span>  <span style="color:var(--fg)">${escHtml(right)}</span>`);
+    await sleep(40);
+  }
+  termPrint('');
+});
+
+regCmd('echo', async (args) => { termPrint(args.join(' ')); });
+
+regCmd('pwd', async () => { termPrint(state.cwd); });
+
+regCmd('ls', async (args) => {
+  const showHidden = args.includes('-a') || args.includes('-la') || args.includes('-al');
+  const items = FS[state.cwd] || [];
+  if (items.length === 0) { termPrint('(empty)', 'dim'); return; }
+  let visible = showHidden ? items : items.filter(i => !i.startsWith('.'));
+  const isSecret = state.cwd === '/secret';
+  if (isSecret && !state.inventory.includes('root_kit')) {
+    termPrint('ls: /secret: Permission denied — Root Kit required', 'err');
+    return;
+  }
+  // Color dirs vs files
+  const out = visible.map(i => {
+    const fullPath = state.cwd + '/' + i;
+    const isDir = !!FS[fullPath] || !!FS[state.cwd + '/' + i];
+    if (isDir) return `<span style="color:var(--info)">${escHtml(i)}/</span>`;
+    if (i.startsWith('.')) return `<span style="color:var(--fg3)">${escHtml(i)}</span>`;
+    if (i.endsWith('.sh')) return `<span style="color:var(--ok)">${escHtml(i)}*</span>`;
+    return `<span style="color:var(--fg)">${escHtml(i)}</span>`;
+  });
+  termPrintRaw(out.join('  '));
+});
+
+regCmd('cd', async (args) => {
+  if (!args[0] || args[0] === '~') { state.cwd = '/home/ghost'; updateHUD(); return; }
+  if (args[0] === '..') {
+    const parts = state.cwd.split('/').filter(Boolean);
+    parts.pop();
+    state.cwd = '/' + parts.join('/') || '/';
+    updateHUD(); return;
+  }
+  let target = args[0].startsWith('/') ? args[0] : state.cwd + '/' + args[0];
+  target = target.replace(/\/+/g, '/');
+  if (target === '/secret' && !state.inventory.includes('root_kit')) {
+    termPrint('cd: /secret: Permission denied — Root Kit required', 'err');
+    return;
+  }
+  if (FS[target] !== undefined) { state.cwd = target; updateHUD(); saveState(); }
+  else { termPrint(`cd: ${args[0]}: No such file or directory`, 'err'); }
+});
+
+regCmd('cat', async (args) => {
+  if (!args[0]) { termPrint('Usage: cat <file>', 'warn'); return; }
+  const path = args[0].startsWith('/') ? args[0] : state.cwd + '/' + args[0];
+  if (path.includes('/secret') && !state.inventory.includes('root_kit')) {
+    termPrint('cat: Permission denied — Root Kit required', 'err'); return;
+  }
+  if (path === '/etc/shadow') { termPrint('[PERMISSION DENIED]', 'err'); return; }
+  const content = FILE_CONTENT[path];
+  if (content) { await termPrintLines(content.split('\n'), '', 12); }
+  else if (FS[path]) { termPrint('cat: ' + args[0] + ': Is a directory', 'err'); }
+  else { termPrint('cat: ' + args[0] + ': No such file or directory', 'err'); }
+});
+
+regCmd('tree', async () => {
+  function printTree(path, prefix='') {
+    const items = FS[path] || [];
+    for (let i=0; i<items.length; i++) {
+      const last = i === items.length - 1;
+      const branch = last ? '└── ' : '├── ';
+      const child = path + '/' + items[i];
+      const isDir = !!FS[child];
+      const cl = isDir ? 'info' : '';
+      termPrint(prefix + branch + items[i] + (isDir ? '/' : ''), cl);
+      if (isDir && path !== '/secret') printTree(child, prefix + (last ? '    ' : '│   '));
+    }
+  }
+  termPrint(state.cwd + '/', 'info');
+  printTree(state.cwd);
+});
+
+regCmd('ping', async (args) => {
+  const ip = args[0];
+  if (!ip) { termPrint('Usage: ping <ip>', 'warn'); return; }
+  termPrint(`PING ${ip} 56(84) bytes of data.`);
+  const known = !!TARGETS[ip];
+  for (let i=0; i<4; i++) {
+    await sleep(400);
+    const ms = known ? Math.floor(Math.random()*80+10) : Math.floor(Math.random()*800+100);
+    if (known || Math.random() > 0.3) {
+      termPrint(`64 bytes from ${ip}: icmp_seq=${i+1} ttl=64 time=${ms} ms`);
+    } else {
+      termPrint(`Request timeout for icmp_seq ${i+1}`, 'warn');
+    }
+  }
+  termPrint(`--- ${ip} ping statistics ---`, 'dim');
+  termPrint(`4 packets transmitted, 4 received`, 'dim');
+});
+
+regCmd('nmap', async (args) => {
+  const ip = args[0];
+  if (!ip) { termPrint('Usage: nmap <ip>', 'warn'); return; }
+  termPrint(`Starting Nmap 7.94 ( https://nmap.org )`, 'dim');
+  await sleep(300);
+  termPrint(`Nmap scan report for ${ip}`);
+  const t = TARGETS[ip];
+  if (t) {
+    const openPorts = [22,80,443,8080,3306,5432].slice(0, Math.floor(Math.random()*4+2));
+    termPrint(`Host is up (0.0${Math.floor(Math.random()*90+10)}s latency).`);
+    await sleep(200);
+    termPrint(`PORT      STATE   SERVICE`);
+    for (const p of openPorts) {
+      await sleep(120);
+      const svc = {22:'ssh',80:'http',443:'https',8080:'http-alt',3306:'mysql',5432:'postgres'}[p]||'unknown';
+      termPrint(`${String(p+'/tcp').padEnd(10)}open    ${svc}`);
+    }
+    termPrint(`\nOS detection: Linux ${Math.floor(Math.random()*3+4)}.${Math.floor(Math.random()*18)}.0`, 'dim');
+  } else {
+    termPrint(`Host seems down.`, 'warn');
+  }
+});
+
+regCmd('scan', async (args) => {
+  const ip = args[0];
+  if (!ip) { termPrint('Usage: scan <ip>', 'warn'); return; }
+  termPrint(`[*] Initiating vulnerability scan on ${ip}...`);
+  await termProgress('Scanning ports      ', 1200);
+  await termProgress('Probing services    ', 800);
+  await termProgress('Checking CVEs       ', 1000);
+  const t = TARGETS[ip];
+  if (t) {
+    const vulns = Math.floor(Math.random()*4 + (t.baseSucc > 50 ? 2 : 0));
+    termPrint(`\n[+] Scan complete. Target: ${t.name}`, 'ok');
+    termPrint(`[+] Difficulty: ${t.diff}`, 'ok');
+    termPrint(`[+] Vulnerabilities found: ${vulns}`, 'ok');
+    if (vulns > 0) {
+      const cves = ['CVE-2024-1337','CVE-2023-0001','CVE-2024-44000','CVE-2023-9999'];
+      for (let i=0; i<Math.min(vulns,4); i++) {
+        await sleep(80);
+        termPrint(`    ● ${cves[i]||'CVE-0000-0000'} — CVSS ${(Math.random()*4+5).toFixed(1)}`, 'warn');
+      }
+    }
+    termPrint(`[*] Use 'hack ${ip}' to attempt exploitation.`, 'info');
+    // Track in hackScore if not present
+    if (!state.hackScore[ip]) state.hackScore[ip] = 0;
+  } else {
+    termPrint(`[-] No known target at ${ip}`, 'warn');
+    termPrint(`[*] Known targets: ${Object.keys(TARGETS).join(', ')}`, 'dim');
+  }
+});
+
+regCmd('trace', async (args) => {
+  const ip = args[0];
+  if (!ip) { termPrint('Usage: trace <ip>', 'warn'); return; }
+  termPrint(`traceroute to ${ip}, 30 hops max`);
+  const hops = Math.floor(Math.random()*8+4);
+  for (let i=1; i<=hops; i++) {
+    await sleep(200);
+    const hop_ip = i===hops ? ip : `${10+Math.floor(Math.random()*240)}.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
+    const ms1 = Math.floor(Math.random()*80+5);
+    const ms2 = ms1 + Math.floor(Math.random()*20);
+    termPrint(` ${String(i).padStart(2)}  ${hop_ip.padEnd(18)} ${ms1} ms  ${ms2} ms`);
+  }
+});
+
+regCmd('status', async () => {
+  termPrint('══ PHANTOM OS STATUS ══', 'sys');
+  termPrint(`User    : ${state.username} (Level ${state.level})`, 'ok');
+  termPrint(`Credits : ${state.credits} cr`);
+  termPrint(`XP      : ${state.xp}`);
+  termPrint(`Tools   : ${state.inventory.length > 0 ? state.inventory.join(', ') : 'none'}`);
+  termPrint(`Hacked  : ${Object.keys(state.hackScore).length} target(s)`);
+  termPrint(`Missions: ${Object.keys(state.missions).filter(k=>state.missions[k]==='done').length}/${MISSIONS.length} complete`);
+  const bonus = getHackBonus();
+  termPrint(`Hack bonus: +${bonus}%`, bonus > 0 ? 'ok' : 'dim');
+});
+
+regCmd(['hack','crack'], async (args) => {
+  const ip = args[0];
+  if (!ip) { termPrint(`Usage: hack <ip>\nTargets: ${Object.keys(TARGETS).join(', ')}`, 'warn'); return; }
+  const t = TARGETS[ip];
+  if (!t) { termPrint(`[-] Unknown target: ${ip}`, 'err'); termPrint(`Known: ${Object.keys(TARGETS).join(', ')}`, 'dim'); return; }
+
+  termPrint(`\n[*] Initiating hack sequence on ${ip} (${t.name})...`, 'warn');
+  await sleep(300);
+
+  // Animated stages
+  const stages = [
+    ['Bypassing firewall          ', 700],
+    ['Probing open ports          ', 600],
+    ['Injecting payload           ', 900],
+    ['Escalating privileges       ', 800],
+    ['Exfiltrating data           ', 700],
+  ];
+  for (const [lbl, ms] of stages) {
+    await termProgress(lbl, ms);
+  }
+
+  const bonus = getHackBonus();
+  const detect = state.inventory.includes('stealth_module') ? 0.3 : 1.0;
+  const stealth = state.inventory.includes('ghost_proxy') ? 0.5 : 1.0;
+  const roll = Math.random() * 100;
+  const needed = 100 - (t.baseSucc + bonus);
+  const success = roll > needed;
+  const detected = success && (Math.random() < 0.2 * detect * stealth);
+
+  termPrint('');
+  if (success) {
+    termPrint(`[+] HACK SUCCESSFUL — ${t.name} compromised!`, 'ok');
+    termPrint(`[+] Reward: +${t.reward} credits, +${t.xp} XP`, 'ok');
+    if (detected) termPrint(`[!] WARNING: Intrusion detection triggered! Trace risk elevated.`, 'err');
+    state.credits += t.reward;
+    const prev = state.hackScore[ip] || 0;
+    const newScore = Math.floor(t.baseSucc + bonus);
+    state.hackScore[ip] = Math.max(prev, newScore);
+    gainXP(t.xp);
+    npcSysMsg(`${state.username} hacked ${ip}`);
+  } else {
+    termPrint(`[-] HACK FAILED — target defended successfully.`, 'err');
+    termPrint(`[*] Try upgrading your tools from the market.`, 'info');
+  }
+
+  saveState();
+  updateHUD();
+  checkMissions();
+  renderMissions();
+});
+
+regCmd('decrypt', async (args) => {
+  if (!args[0]) { termPrint('Usage: decrypt <file>', 'warn'); return; }
+  if (!state.inventory.includes('adv_cracker') && !state.inventory.includes('zerod_exploit')) {
+    termPrint('[-] Advanced Cracker or Zero-Day Exploit required for decryption.', 'err'); return;
+  }
+  termPrint(`[*] Decrypting ${args[0]}...`);
+  await termProgress('Running AES-256 bruteforce ', 2500);
+  await sleep(300);
+  termPrint(`[+] Decrypted: ${args[0].split('/').pop()} — contents logged to /var/log/hack.log`, 'ok');
+  gainXP(30);
+});
+
+regCmd('shop', async () => {
+  openWin('marketWin','marketBtn');
+  termPrint('[*] Opening Black Market...', 'info');
+});
+
+regCmd('buy', async (args) => {
+  if (!args[0]) { termPrint('Usage: buy <item_id>\nUse shop command to see items.', 'warn'); return; }
+  const item = MARKET_ITEMS.find(i => i.id === args[0].toLowerCase());
+  if (!item) { termPrint(`[-] Unknown item: ${args[0]}`, 'err'); return; }
+  if (state.inventory.includes(item.id)) { termPrint(`[*] You already own ${item.name}.`, 'warn'); return; }
+  if (state.credits < item.price) { termPrint(`[-] Insufficient credits. Need ${item.price}, have ${state.credits}.`, 'err'); return; }
+  state.credits -= item.price;
+  state.inventory.push(item.id);
+  saveState();
+  updateHUD();
+  termPrint(`[+] Purchased: ${item.name} (${item.effect})`, 'ok');
+  termPrint(`[*] Remaining balance: ${state.credits} cr`, 'dim');
+  gainXP(25);
+  renderMarket();
+  checkMissions();
+});
+
+regCmd(['inventory','inv'], async () => {
+  if (state.inventory.length === 0) { termPrint('Inventory empty. Visit the market.', 'dim'); return; }
+  termPrint('─── INVENTORY ───', 'sys');
+  for (const id of state.inventory) {
+    const item = MARKET_ITEMS.find(i => i.id === id);
+    if (item) termPrint(`  ${item.icon} ${item.name.padEnd(24)} [${item.effect}]`, 'ok');
+  }
+});
+
+regCmd('credits', async () => { termPrint(`Credits: ${state.credits} cr`, 'warn'); });
+
+regCmd('missions', async () => {
+  openWin('missionsWin','missBtn');
+  termPrint('[*] Opening Mission Board...', 'info');
+});
+
+regCmd('matrix', async () => {
+  const canvas = document.getElementById('matrixCanvas');
+  const origOpacity = canvas.style.opacity;
+  termPrint('[*] ENTERING THE MATRIX...', 'sys');
+  for (let i = 0; i <= 10; i++) {
+    canvas.style.opacity = i * 0.08;
+    await sleep(80);
+  }
+  await sleep(2000);
+  for (let i = 10; i >= 0; i--) {
+    canvas.style.opacity = i * 0.08;
+    await sleep(60);
+  }
+  canvas.style.opacity = '0.18';
+  termPrint('[*] You are back.', 'dim');
+});
+
+regCmd('glitch', async () => {
+  termPrint('[*] Initiating glitch sequence...', 'warn');
+  const els = Array.from(termBody.querySelectorAll('.term-line'));
+  for (let i=0; i<6; i++) {
+    const el = els[Math.floor(Math.random()*els.length)];
+    if (el) {
+      el.classList.add('glitch-anim');
+      setTimeout(() => el.classList.remove('glitch-anim'), 350);
+    }
+    await sleep(100);
+  }
+  document.body.classList.add('glitch-anim');
+  setTimeout(() => document.body.classList.remove('glitch-anim'), 300);
+  termPrint('[*] Glitch complete.', 'dim');
+});
+
+regCmd('theme', async (args) => {
+  const themes = ['green','cyan','amber','red','white'];
+  const t = args[0]?.toLowerCase();
+  if (!t || !themes.includes(t)) {
+    termPrint(`Available themes: ${themes.join(' | ')}`, 'info');
+    return;
+  }
+  document.body.className = t === 'green' ? '' : `theme-${t}`;
+  state.theme = t;
+  saveState();
+  termPrint(`[+] Theme set to: ${t}`, 'ok');
+});
+
+regCmd('fortune', async () => {
+  const fortunes = [
+    'The only secure system is one that is powered off.',
+    'In cyberspace, no one can hear you getting pwned.',
+    'Hack the planet.',
+    'Knowledge is the ultimate zero-day.',
+    'Every firewall has a back door.',
+    'The network is the target.',
+    'Information wants to be free.',
+    'Security through obscurity is not security.',
+    'Root is not a destination, it is a journey.',
+    'There is no patch for human stupidity.',
+  ];
+  termPrint(fortunes[Math.floor(Math.random()*fortunes.length)]);
+});
+
+regCmd('cowsay', async (args) => {
+  const msg = args.join(' ') || 'Moo';
+  const top = '  ' + '_'.repeat(msg.length + 2);
+  const bot = '  ' + '-'.repeat(msg.length + 2);
+  await termPrintLines([top, `< ${msg} >`, bot, '        \\   ^__^', '         \\  (oo)\\_______', '            (__)\\       )\\/\\', '                ||----w |', '                ||     ||'], 'dim', 20);
+});
+
+regCmd('banner', async (args) => {
+  const txt = args.join(' ') || 'PHANTOM';
+  // Simple big-letter style
+  termPrint(`╔${'═'.repeat(txt.length + 4)}╗`, 'sys');
+  termPrint(`║  ${txt}  ║`, 'sys');
+  termPrint(`╚${'═'.repeat(txt.length + 4)}╝`, 'sys');
+});
+
+regCmd('sudo', async (args) => {
+  await sleep(500);
+  termPrint(`[sudo] password for ${state.username}: `, 'warn');
+  await sleep(1200);
+  termPrint('sudo: permission denied: you are not in the sudoers file.', 'err');
+  termPrint('This incident will be reported.', 'dim');
+  npcSysMsg(`${state.username} tried sudo — failed`);
+});
+
+regCmd('vim', async () => {
+  termPrint('vim: you opened vim.', 'warn');
+  await sleep(500);
+  termPrint(':q!', 'dim');
+  await sleep(300);
+  termPrint('vim: already escaped. You got lucky.', 'ok');
+});
+
+regCmd('reboot', async () => {
+  termPrint('[*] Rebooting system...', 'warn');
+  await sleep(1000);
+  termPrint('Syncing filesystems... done.', 'dim');
+  await sleep(800);
+  termPrint('System rebooting.', 'dim');
+  await sleep(600);
+  termClear();
+  state = loadState();
+  termWelcome();
+  updateHUD();
+});
+
+regCmd('exit', async () => {
+  termPrint('Logout.', 'dim');
+  await sleep(600);
+  document.getElementById('desktop').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+});
+
+// Easter eggs
+regCmd('hacktheplanet', async () => {
+  const lines = ['','HACK','','THE','','PLANET',''];
+  for (const l of lines) {
+    const el = termPrint(l, 'ok');
+    el.style.fontSize = '22px';
+    el.style.textShadow = 'var(--glow)';
+    await sleep(200);
+  }
+  termPrint('🌍💀', 'ok');
+  gainXP(10);
+});
+
+regCmd('nyan', async () => {
+  const frames = [
+    '~(=^‥^)ノ彡☆彡 NYAN',
+    ' (=^‥^)ノ彡☆彡 NYAN',
+    '~(=^‥^)ノ彡☆彡 NYAN',
+  ];
+  for (let i=0; i<9; i++) {
+    const el = termPrint(frames[i%3], 'ok');
+    el.style.color = ['#ff77aa','#ffaa00','#00ff88','#00aaff'][i%4];
+    await sleep(120);
+  }
+});
+
+regCmd('doge', async () => {
+  const dogeLines = ['such hack','very root','wow','much exploit','so stealth','many credits'];
+  for (const l of dogeLines) {
+    const el = termPrint(l);
+    el.style.color = ['#ffaa00','#ff77aa','#00ff88','#00aaff','#ff4444','#aaaaff'][Math.floor(Math.random()*6)];
+    el.style.marginLeft = Math.floor(Math.random()*30) + 'px';
+    await sleep(200);
+  }
+});
+
+// ── TERMINAL WELCOME ────────────────────────────────────────
+function termWelcome() {
+  termPrint('PhantomOS Ghost Shell v2.4', 'sys');
+  termPrint(`Welcome back, ${state.username}.`, 'ok');
+  termPrint(`Last login: ${new Date().toLocaleString()}`, 'dim');
+  termPrint('');
+  termPrint(`Type 'help' for commands. Type 'status' for your stats.`, 'dim');
+  termPrint('');
+}
+
+// ── MISSIONS LOGIC ─────────────────────────────────────────
+function checkMissions() {
+  let changed = false;
+  for (const m of MISSIONS) {
+    if (state.missions[m.id] !== 'done' && m.check(state)) {
+      state.missions[m.id] = 'done';
+      state.credits += m.reward;
+      state.xp += m.xp;
+      changed = true;
+      termPrint(`\n🏆 MISSION COMPLETE: "${m.title}"  +${m.reward} cr  +${m.xp} XP`, 'ok');
+      npcSysMsg(`${state.username} completed mission: ${m.title}`);
+    }
+  }
+  if (changed) { saveState(); updateHUD(); }
+}
+
+// ── MARKET RENDER ──────────────────────────────────────────
+function renderMarket() {
+  const body = document.getElementById('marketBody');
+  body.innerHTML = '';
+  for (const item of MARKET_ITEMS) {
+    const owned = state.inventory.includes(item.id);
+    const canBuy = !owned && state.credits >= item.price;
+    const div = document.createElement('div');
+    div.className = 'market-item';
+    div.innerHTML = `
+      <div class="mi-info">
+        <div class="mi-name">${item.icon} ${escHtml(item.name)}</div>
+        <div class="mi-desc">${escHtml(item.desc)}</div>
+        ${owned ? `<div class="mi-owned">✓ OWNED</div>` : ''}
+      </div>
+      <div class="mi-right">
+        <div class="mi-price">${owned ? '—' : item.price + ' cr'}</div>
+        <button class="mi-buy" onclick="buyFromMarket('${item.id}')" ${owned || !canBuy ? 'disabled' : ''}>${owned ? 'Owned' : 'Buy'}</button>
+      </div>`;
+    body.appendChild(div);
+  }
+  document.getElementById('marketCredAmt').textContent = state.credits;
+}
+
+function buyFromMarket(id) {
+  const item = MARKET_ITEMS.find(i => i.id === id);
+  if (!item || state.inventory.includes(item.id)) return;
+  if (state.credits < item.price) {
+    alert(`Insufficient credits. Need ${item.price}, have ${state.credits}.`); return;
+  }
+  state.credits -= item.price;
+  state.inventory.push(item.id);
+  saveState();
+  updateHUD();
+  renderMarket();
+  gainXP(25);
+  checkMissions();
+  // Echo to terminal
+  termPrint(`[Market] Purchased: ${item.name}`, 'ok');
+}
+
+// ── MISSIONS RENDER ────────────────────────────────────────
+function renderMissions() {
+  const body = document.getElementById('missionsBody');
+  body.innerHTML = '';
+  for (const m of MISSIONS) {
+    const done = state.missions[m.id] === 'done';
+    const div = document.createElement('div');
+    div.className = 'mission-card' + (done ? ' done' : '');
+    div.innerHTML = `
+      <div class="mc-header">
+        <span class="mc-title">${escHtml(m.title)}</span>
+        <span class="mc-reward">+${m.reward} cr / +${m.xp} XP</span>
+      </div>
+      <div class="mc-desc">${escHtml(m.desc)}</div>
+      <div class="mc-status ${done ? 'done' : ''}">${done ? '✓ COMPLETE' : '○ In Progress'}</div>`;
+    body.appendChild(div);
+  }
+}
+
+// ── WINDOW MANAGEMENT ──────────────────────────────────────
+let activeWin = null;
+let dragState = null;
+const winZ = { termWin:30, marketWin:30, missionsWin:30 };
+let zCounter = 31;
+
+function bringToFront(winId) {
+  zCounter++;
+  document.getElementById(winId).style.zIndex = zCounter;
+}
+
+function openWin(winId, btnId) {
+  const win = document.getElementById(winId);
+  win.classList.remove('hidden');
+  bringToFront(winId);
+  document.getElementById(btnId)?.classList.add('active');
+  if (winId === 'marketWin')   renderMarket();
+  if (winId === 'missionsWin') renderMissions();
+}
+
+function closeWin(winId, btnId) {
+  document.getElementById(winId).classList.add('hidden');
+  document.getElementById(btnId)?.classList.remove('active');
+}
+
+function minWin(winId, btnId) { closeWin(winId, btnId); }
+
+function toggleWin(winId, btnId) {
+  const win = document.getElementById(winId);
+  if (win.classList.contains('hidden')) openWin(winId, btnId);
+  else closeWin(winId, btnId);
+}
+
+// Draggable windows
+document.querySelectorAll('.win-titlebar').forEach(bar => {
+  bar.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('win-btn')) return;
+    const win = bar.closest('.win');
+    bringToFront(win.id);
+    const rect = win.getBoundingClientRect();
+    dragState = { win, startX: e.clientX - rect.left, startY: e.clientY - rect.top };
+    e.preventDefault();
+  });
+});
+
+document.addEventListener('mousemove', e => {
+  if (!dragState) return;
+  const { win, startX, startY } = dragState;
+  let x = e.clientX - startX;
+  let y = e.clientY - startY;
+  x = Math.max(0, Math.min(x, window.innerWidth - win.offsetWidth));
+  y = Math.max(0, Math.min(y, window.innerHeight - win.offsetHeight));
+  win.style.left = x + 'px';
+  win.style.top  = y + 'px';
+});
+
+document.addEventListener('mouseup', () => { dragState = null; });
+
+// Click to focus window
+document.querySelectorAll('.win').forEach(win => {
+  win.addEventListener('mousedown', () => bringToFront(win.id));
+});
+
+// Resize handle
+document.querySelectorAll('.win-resize').forEach(handle => {
+  let resizing = false, win, ox, oy, ow, oh;
+  handle.addEventListener('mousedown', e => {
+    resizing = true;
+    win = handle.closest('.win');
+    ox = e.clientX; oy = e.clientY;
+    ow = win.offsetWidth; oh = win.offsetHeight;
+    e.stopPropagation(); e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!resizing) return;
+    win.style.width  = Math.max(300, ow + (e.clientX - ox)) + 'px';
+    win.style.height = Math.max(200, oh + (e.clientY - oy)) + 'px';
+  });
+  document.addEventListener('mouseup', () => { resizing = false; });
+});
+
+// ── INPUT HANDLING ─────────────────────────────────────────
+termInput.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    const val = termInput.value;
+    termInput.value = '';
+    await runCmd(val);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (histIdx < cmdHistory.length - 1) histIdx++;
+    termInput.value = cmdHistory[histIdx] || '';
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (histIdx > 0) histIdx--;
+    else { histIdx = -1; termInput.value = ''; return; }
+    termInput.value = cmdHistory[histIdx] || '';
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    // autocomplete
+    const partial = termInput.value.trim().toLowerCase();
+    const allCmds = Object.keys(CMD_HANDLERS);
+    const matches = allCmds.filter(c => c.startsWith(partial));
+    if (matches.length === 1) termInput.value = matches[0];
+    else if (matches.length > 1) {
+      termPrint(matches.join('   '), 'dim');
+    }
+  } else if (e.key === 'l' && e.ctrlKey) {
+    e.preventDefault();
+    termClear();
+  } else if (e.key === 'c' && e.ctrlKey) {
+    e.preventDefault();
+    if (isAnimating) { isAnimating = false; termPrint('^C', 'err'); }
+  }
+});
+
+// Keep terminal focused when clicking in term window
+document.getElementById('termWin').addEventListener('click', () => {
+  termInput.focus();
+});
+
+// Global keyboard shortcut: Alt+T = terminal
+document.addEventListener('keydown', e => {
+  if (e.altKey && e.key === 't') toggleWin('termWin','termBtn');
+  if (e.altKey && e.key === 'm') toggleWin('marketWin','marketBtn');
+  if (e.altKey && e.key === 'q') toggleWin('missionsWin','missBtn');
+});
+
+// ── NET INDICATOR ──────────────────────────────────────────
+let netConnected = false;
+function toggleNet() {
+  netConnected = !netConnected;
+  document.getElementById('sbNet').textContent = netConnected ? '📡 DARKNET' : '📡 OFFLINE';
+  document.getElementById('sbNet').style.color = netConnected ? 'var(--ok)' : 'var(--info)';
+}
+
+// ── MATRIX CANVAS ─────────────────────────────────────────
+(function initMatrix() {
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+  let cols, drops;
+  const CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF@#$%&*<>{}[]|/\\'.split('');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols  = Math.floor(canvas.width / 16);
+    drops = Array(cols).fill(1).map(() => Math.floor(Math.random() * canvas.height / 16));
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '14px Courier New';
+    for (let i = 0; i < cols; i++) {
+      const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
+      const hue = getComputedStyle(document.body).getPropertyValue('--fg').trim() || '#00ff41';
+      ctx.fillStyle = hue;
+      ctx.fillText(ch, i * 16, drops[i] * 16);
+      if (drops[i] * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize, { passive:true });
+  resize();
+  draw();
+})();
+
+// ── BOOT SEQUENCE ─────────────────────────────────────────
+async function runBoot() {
+  const bootLog = document.getElementById('bootLog');
+  const barFill = document.getElementById('bootBarFill');
+
+  const lines = [
+    ['[  0.000000] PhantomOS Ghost Shell v2.4 initializing...', 'ok'],
+    ['[  0.124837] Kernel: ghost-kernel-5.18.0-phantom #1 SMP x86_64', ''],
+    ['[  0.238419] CPU: Intel Core i9-0000 @ 4.0GHz (16 cores)', ''],
+    ['[  0.351200] Memory: 65536K available, 2048K reserved', ''],
+    ['[  0.402000] ACPI: IRQ0 used by override', 'dim'],
+    ['[  0.481000] Loading crypto modules...', ''],
+    ['[  0.590000] NET: Registered protocol family 2 (TCP/IP)', 'ok'],
+    ['[  0.701000] Loading steganography engine...', ''],
+    ['[  0.812000] VFS: Ghost filesystem mounted', 'ok'],
+    ['[  0.934000] Loading darknet drivers...', ''],
+    ['[  1.100000] darknet: Connection established via Tor (3 hops)', 'ok'],
+    ['[  1.201000] Loading exploit framework... OK', 'ok'],
+    ['[  1.350000] Starting ghost-shell daemon...', ''],
+    ['[  1.502000] Authentication module initialized', 'ok'],
+    ['[  1.650000] Mounting /home/ghost (ext4, encrypted)', 'ok'],
+    ['[  1.744000] Starting NPC simulation service...', ''],
+    ['[  1.890000] Loading user session data...', ''],
+    ['[  2.010000] PhantomOS: System ready.', 'ok'],
+  ];
+
+  bootLog.innerHTML = '';
+  for (let i = 0; i < lines.length; i++) {
+    const [text, cls] = lines[i];
+    const span = document.createElement('span');
+    span.className = cls;
+    span.textContent = text + '\n';
+    bootLog.appendChild(span);
+    barFill.style.width = Math.round((i+1)/lines.length * 100) + '%';
+    await sleep(90 + Math.random() * 60);
+  }
+  await sleep(400);
+  // Transition to login
+  document.getElementById('bootScreen').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginInput').focus();
+}
+
+// ── LOGIN ─────────────────────────────────────────────────
+document.getElementById('loginInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const val = document.getElementById('loginInput').value.trim();
+    if (!val) return;
+    state.username = val.replace(/[^a-zA-Z0-9_\-]/g,'').slice(0,20) || 'ghost';
+    saveState();
+    startDesktop();
+  }
+});
+
+function startDesktop() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('desktop').classList.remove('hidden');
+  updateHUD();
+  termWelcome();
+  startNPCBots();
+  updateClock();
+  checkMissions();
+
+  // Network pulse
+  setTimeout(() => {
+    toggleNet();
+    termPrint('[net] Connected to darknet via Tor relay.', 'info');
+  }, 1500);
+
+  // Auto-focus terminal input
+  setTimeout(() => { termInput.focus(); }, 100);
+}
+
+// ── KICK OFF ─────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // If already has a username, go straight to desktop
+  const saved = loadState();
+  if (saved.username && saved.username !== 'ghost' && window.location.hash === '#skip') {
+    startDesktop();
+  } else {
+    runBoot();
+  }
+});
+</script>
+</body>
+</html>
