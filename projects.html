@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="吳東橙 的專案作品與服務">
+  <title>專案 &amp; 服務 — 吳東橙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>
+        <span class="logo-name">吳東橙</span>
+        <span class="logo-bracket">&nbsp;/&gt;</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"    class="nav-link">首頁</a></li>
+        <li><a href="teaching.html" class="nav-link">教學</a></li>
+        <li><a href="projects.html" class="nav-link active">專案</a></li>
+        <li><a href="index.html#contact" class="btn btn-sm btn-primary">聯絡我</a></li>
+      </ul>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="開啟選單">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       PAGE HERO
+       ══════════════════════════════════════ -->
+  <section class="page-hero">
+    <div class="page-hero-orb" style="background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);"></div>
+    <div class="page-hero-orb-2"></div>
+    <div class="container">
+      <div class="page-hero-content">
+        <div class="section-label">我的作品</div>
+        <h1 class="section-title">
+          專案 &amp; <span class="gradient-text">服務</span>
+        </h1>
+        <p class="page-hero-desc">
+          [在這裡說明你做專案的動機或方向。例如：你喜歡解決什麼類型的問題？你的作品通常有什麼共同特點？讓訪客在看作品之前就有所期待。]
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       PROJECTS GRID
+       ══════════════════════════════════════ -->
+  <section class="section" id="projects">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">專案</div>
+          <h2 class="section-title">我做過的作品</h2>
+          <p class="section-desc">從工具到應用，每個專案都有它背後的故事</p>
+        </div>
+      </div>
+
+      <!-- 篩選按鈕 -->
+      <div class="filter-row" data-target=".proj-card">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="webapp">Web App</button>
+        <button class="filter-btn" data-filter="tool">工具</button>
+        <button class="filter-btn" data-filter="research">研究</button>
+        <button class="filter-btn" data-filter="other">其他</button>
+        <!-- 可自行調整類別 -->
+      </div>
+
+      <div class="projects-full-grid stagger">
+
+        <!-- ── 專案卡 1 ─────────────────────── -->
+        <article class="proj-card" data-cat="webapp">
+          <div class="proj-card-cover proj-bg-1">[縮寫]</div>
+          <span class="proj-status">上線中</span>
+          <div class="proj-card-body">
+            <div class="card-label">[類型，如 Web App / 開源工具]</div>
+            <h3 class="card-title">[專案名稱 1]</h3>
+            <p class="card-desc">
+              [專案描述：這個專案解決了什麼問題？有什麼特別的技術或設計決策？用戶體驗如何？讓訪客想要馬上試用。]
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">[技術 1]</span>
+                <span class="tech-tag">[技術 2]</span>
+                <span class="tech-tag">[技術 3]</span>
+              </div>
+              <div style="display:flex; gap:8px; flex-shrink:0;">
+                <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
+                <a href="#" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Demo →</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 專案卡 2 ─────────────────────── -->
+        <article class="proj-card" data-cat="tool">
+          <div class="proj-card-cover proj-bg-2">[縮寫]</div>
+          <span class="proj-status">上線中</span>
+          <div class="proj-card-body">
+            <div class="card-label">[類型]</div>
+            <h3 class="card-title">[專案名稱 2]</h3>
+            <p class="card-desc">
+              [描述...]
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">[技術 1]</span>
+                <span class="tech-tag">[技術 2]</span>
+              </div>
+              <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 專案卡 3 ─────────────────────── -->
+        <article class="proj-card" data-cat="research">
+          <div class="proj-card-cover proj-bg-3">[縮寫]</div>
+          <span class="proj-status wip">進行中</span>
+          <div class="proj-card-body">
+            <div class="card-label">[類型]</div>
+            <h3 class="card-title">[專案名稱 3]</h3>
+            <p class="card-desc">
+              [描述...]
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">[技術]</span>
+              </div>
+              <a href="#" class="card-link">了解更多 →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 專案卡 4 ─────────────────────── -->
+        <article class="proj-card" data-cat="webapp,tool">
+          <div class="proj-card-cover" style="background: linear-gradient(135deg, #1e1b4b, #06b6d4); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.2);">[縮]</div>
+          <div class="proj-card-body">
+            <div class="card-label">[類型]</div>
+            <h3 class="card-title">[專案名稱 4]</h3>
+            <p class="card-desc">
+              [描述...]
+            </p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">[技術 1]</span>
+                <span class="tech-tag">[技術 2]</span>
+              </div>
+              <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 專案卡 5 ─────────────────────── -->
+        <article class="proj-card" data-cat="other">
+          <div class="proj-card-cover" style="background: linear-gradient(135deg, #431407, #7c2d12); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.2);">[縮]</div>
+          <div class="proj-card-body">
+            <div class="card-label">[類型]</div>
+            <h3 class="card-title">[專案名稱 5]</h3>
+            <p class="card-desc">[描述...]</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">[技術]</span>
+              </div>
+              <a href="#" class="card-link">了解更多 →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 專案卡 6 ─────────────────────── -->
+        <article class="proj-card" data-cat="tool">
+          <div class="proj-card-cover" style="background: linear-gradient(135deg, #14532d, #166534); font-family: var(--mono); font-weight: 900; font-size: 42px; color: rgba(255,255,255,0.2);">[縮]</div>
+          <div class="proj-card-body">
+            <div class="card-label">[類型]</div>
+            <h3 class="card-title">[專案名稱 6]</h3>
+            <p class="card-desc">[描述...]</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tech-tag">[技術]</span>
+              </div>
+              <a href="#" class="btn btn-ghost btn-sm">GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 複製上方卡片的程式碼來新增更多專案 -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SERVICES
+       ══════════════════════════════════════ -->
+  <section class="section section-alt" id="services">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">服務</div>
+          <h2 class="section-title">我能提供的服務</h2>
+          <p class="section-desc">有具體需求？以下是我目前提供的服務項目</p>
+        </div>
+        <a href="index.html#contact" class="btn btn-outline">洽詢合作 →</a>
+      </div>
+
+      <div class="services-grid stagger">
+
+        <!-- 服務 1 -->
+        <div class="service-card">
+          <div class="service-num">01</div>
+          <h3 class="service-title">[服務項目 1]</h3>
+          <p class="service-desc">
+            [服務描述：說明這個服務的內容、交付物或適合哪類客戶。讓潛在客戶知道他們能得到什麼。]
+          </p>
+        </div>
+
+        <!-- 服務 2 -->
+        <div class="service-card">
+          <div class="service-num">02</div>
+          <h3 class="service-title">[服務項目 2]</h3>
+          <p class="service-desc">
+            [服務描述...]
+          </p>
+        </div>
+
+        <!-- 服務 3 -->
+        <div class="service-card">
+          <div class="service-num">03</div>
+          <h3 class="service-title">[服務項目 3]</h3>
+          <p class="service-desc">
+            [服務描述...]
+          </p>
+        </div>
+
+        <!-- 服務 4 -->
+        <div class="service-card">
+          <div class="service-num">04</div>
+          <h3 class="service-title">[服務項目 4]</h3>
+          <p class="service-desc">
+            [服務描述...]
+          </p>
+        </div>
+
+        <!-- 可繼續新增服務 05、06... -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CTA — 聯絡我
+       ══════════════════════════════════════ -->
+  <section class="section" id="cta">
+    <div class="container">
+      <div class="contact-wrap reveal">
+        <div class="contact-content">
+          <div class="section-label">開始合作</div>
+          <h2 class="section-title">有個想法想聊聊？</h2>
+          <p>[不論是開發合作、顧問諮詢，還是只是想交流想法，歡迎直接聯絡我！]</p>
+          <div class="contact-links">
+            <a href="mailto:orange980730@gmail.com" class="contact-item">
+              <div class="ci-icon">✉️</div>
+              <div>
+                <div class="ci-type">Email</div>
+                <div class="ci-val">orange980730@gmail.com</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="contact-cta">
+          <a href="mailto:orange980730@gmail.com" class="btn btn-primary btn-xl">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M2 5.5l8 6 8-6M2 5.5h16v11H2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+            傳送訊息
+          </a>
+          <p class="resp-time">⚡ 通常在 24 小時內回覆</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>
+            <span class="logo-name">吳東橙</span>
+            <span class="logo-bracket">&nbsp;/&gt;</span>
+          </a>
+          <p class="footer-tagline">[一句話描述你自己或你的網站]</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <span class="footer-col-title">頁面</span>
+            <a href="index.html">首頁</a>
+            <a href="teaching.html">教學</a>
+            <a href="projects.html">專案</a>
+            <a href="index.html#contact">聯絡</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">社群</span>
+            <a href="https://github.com/orange0730" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.instagram.com/orange980730" target="_blank" rel="noopener">Instagram</a>
+            <a href="mailto:orange980730@gmail.com">Email</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 吳東橙。保留所有權利。</span>
+        <span>用 ❤️ 親手打造</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

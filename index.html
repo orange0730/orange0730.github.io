@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="吳東橙 的個人網站 — 教學資源、課程講義與專案作品">
+  <title>吳東橙 — 個人網站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>
+        <span class="logo-name">吳東橙</span>
+        <span class="logo-bracket">&nbsp;/&gt;</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"   class="nav-link">首頁</a></li>
+        <li><a href="teaching.html" class="nav-link">教學</a></li>
+        <li><a href="projects.html" class="nav-link">專案</a></li>
+        <li>
+          <a href="#contact" class="btn btn-sm btn-primary">聯絡我</a>
+        </li>
+      </ul>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="開啟選單">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       HERO
+       ══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg">
+      <canvas id="starsCanvas"></canvas>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- 狀態徽章 -->
+        <div class="hero-badge">
+          <span class="badge-pulse"></span>
+          歡迎來到我的個人網站
+        </div>
+
+        <!-- 主標題 -->
+        <h1 class="hero-title">
+          <span class="title-line">嗨，我是</span>
+          <span class="gradient-text">吳東橙</span>
+        </h1>
+
+        <!-- 打字機副標題 -->
+        <div class="hero-subtitle">
+          <span>我專注於&nbsp;</span>
+          <span class="typewriter" id="typewriter"></span>
+          <span class="cursor">|</span>
+        </div>
+
+        <!-- 簡介 -->
+        <p class="hero-desc">
+          [在這裡寫一段關於你自己的介紹，2–3 句話即可。例如：你是誰、你在做什麼、你有什麼熱情。讓訪客在幾秒內就能認識你。]
+        </p>
+
+        <!-- CTA 按鈕 -->
+        <div class="hero-actions">
+          <a href="projects.html" class="btn btn-primary btn-lg">
+            查看我的專案
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="teaching.html" class="btn btn-outline btn-lg">
+            探索教學資源
+          </a>
+        </div>
+
+        <!-- 統計數字 — 填入你的真實數字 -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num gradient-text">[N]+</span>
+            <span class="stat-lbl">課程與講義</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num gradient-text">[N]+</span>
+            <span class="stat-lbl">完成專案</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num gradient-text">[N]+</span>
+            <span class="stat-lbl">服務學員</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 向下滾動提示 -->
+    <div class="scroll-hint">
+      <span>向下滾動</span>
+      <div class="scroll-arrow-anim">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 4v12M4 10l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ABOUT
+       ══════════════════════════════════════ -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="about-grid">
+
+        <!-- 左欄：文字 -->
+        <div class="about-content reveal">
+          <div class="section-label">關於我</div>
+          <h2 class="section-title">背景與故事</h2>
+
+          <div class="about-body">
+            <p>
+              [在這裡介紹你自己。你可以說說你的學習歷程、工作經歷，或是讓你走上現在這條路的故事。讓訪客感受到你是一個真實的人，而不只是履歷清單。]
+            </p>
+            <p>
+              [繼續說說你的專長與興趣，或是你目前正在鑽研的主題。可以分享讓你感到興奮的事情，展現你的熱情與個性。]
+            </p>
+          </div>
+
+          <span class="skills-label">技能 &amp; 工具</span>
+          <div class="tags-wrap">
+            <span class="tag">[技能 1]</span>
+            <span class="tag">[技能 2]</span>
+            <span class="tag">[技能 3]</span>
+            <span class="tag">[技能 4]</span>
+            <span class="tag">[技能 5]</span>
+            <span class="tag">[技能 6]</span>
+          </div>
+
+          <a href="#contact" class="btn btn-primary">
+            與我聯繫
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- 右欄：code card + 裝飾卡 -->
+        <div class="about-visual reveal reveal-right">
+          <!-- profile.json 卡片 -->
+          <div class="code-card">
+            <div class="code-card-header">
+              <div class="win-dots">
+                <span class="dot dot-r"></span>
+                <span class="dot dot-y"></span>
+                <span class="dot dot-g"></span>
+              </div>
+              <span class="code-fname">profile.json</span>
+            </div>
+            <div class="code-card-body">
+<pre><code><span class="cp">{</span>
+  <span class="ck">"name"</span><span class="cp">:</span>      <span class="cs">"吳東橙"</span><span class="cp">,</span>
+  <span class="ck">"role"</span><span class="cp">:</span>      <span class="cs">"[職稱 / 身份]"</span><span class="cp">,</span>
+  <span class="ck">"location"</span><span class="cp">:</span>  <span class="cs">"[所在城市，國家]"</span><span class="cp">,</span>
+  <span class="ck">"education"</span><span class="cp">:</span> <span class="cs">"[學歷]"</span><span class="cp">,</span>
+  <span class="ck">"focus"</span><span class="cp">: [</span>
+    <span class="cs">"[專注領域 1]"</span><span class="cp">,</span>
+    <span class="cs">"[專注領域 2]"</span><span class="cp">,</span>
+    <span class="cs">"[專注領域 3]"</span>
+  <span class="cp">],</span>
+  <span class="ck">"email"</span><span class="cp">:</span>     <span class="cs">"orange980730@gmail.com"</span><span class="cp">,</span>
+  <span class="ck">"openTo"</span><span class="cp">:</span>    <span class="cs">"合作機會"</span><span class="cp">,</span>
+  <span class="ck">"available"</span><span class="cp">:</span> <span class="cb">true</span>
+<span class="cp">}</span></code></pre>
+            </div>
+          </div>
+
+          <!-- 裝飾資訊卡 -->
+          <div class="deco-cards">
+            <div class="deco-card">
+              <span class="deco-emoji">🎓</span>
+              <div>
+                <div class="deco-title">[學歷 / 資格認證]</div>
+                <div class="deco-sub">[學校 / 機構名稱]</div>
+              </div>
+            </div>
+            <div class="deco-card">
+              <span class="deco-emoji">📍</span>
+              <div>
+                <div class="deco-title">目前位置</div>
+                <div class="deco-sub">[城市，國家]</div>
+              </div>
+            </div>
+            <div class="deco-card">
+              <span class="deco-emoji">✨</span>
+              <div>
+                <div class="deco-title">[一件你引以為傲的事]</div>
+                <div class="deco-sub">[簡短說明]</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FEATURED TEACHING
+       ══════════════════════════════════════ -->
+  <section class="section section-alt" id="teaching-preview">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">教學資源</div>
+          <h2 class="section-title">課程與講義</h2>
+          <p class="section-desc">精心設計的學習材料，幫助學習者掌握核心知識</p>
+        </div>
+        <a href="teaching.html" class="btn btn-outline">查看全部 →</a>
+      </div>
+
+      <div class="cards-grid stagger">
+
+        <!-- 教學卡 1 -->
+        <article class="card">
+          <div class="card-icon-wrap">📚</div>
+          <div class="card-label">[課程類別]</div>
+          <h3 class="card-title">[課程名稱 1]</h3>
+          <p class="card-desc">
+            [課程描述：說明這門課的主要內容、學習目標，以及適合哪些人學習。2–3 句話即可。]
+          </p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">[標籤 1]</span>
+              <span class="tech-tag">[標籤 2]</span>
+            </div>
+            <a href="teaching.html" class="card-link">了解更多 →</a>
+          </div>
+        </article>
+
+        <!-- 教學卡 2 -->
+        <article class="card">
+          <div class="card-icon-wrap">📝</div>
+          <div class="card-label">[類別]</div>
+          <h3 class="card-title">[講義名稱]</h3>
+          <p class="card-desc">
+            [講義描述：說明這份講義的內容重點、適用場合或課程。]
+          </p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">[標籤 1]</span>
+            </div>
+            <a href="teaching.html" class="card-link">下載 →</a>
+          </div>
+        </article>
+
+        <!-- 教學卡 3 -->
+        <article class="card">
+          <div class="card-icon-wrap">🎯</div>
+          <div class="card-label">[類別]</div>
+          <h3 class="card-title">[工作坊 / 課程名稱]</h3>
+          <p class="card-desc">
+            [描述：說明工作坊或特別課程的特色與適合對象。]
+          </p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">[標籤]</span>
+            </div>
+            <a href="teaching.html" class="card-link">了解更多 →</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FEATURED PROJECTS
+       ══════════════════════════════════════ -->
+  <section class="section" id="projects-preview">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">我的作品</div>
+          <h2 class="section-title">專案與服務</h2>
+          <p class="section-desc">從想法到實現，這是我做過的一些有趣作品</p>
+        </div>
+        <a href="projects.html" class="btn btn-outline">查看全部 →</a>
+      </div>
+
+      <div class="projects-home-grid stagger">
+
+        <!-- 精選專案（大卡）-->
+        <article class="card card-project-featured">
+          <div class="proj-visual">
+            <div class="proj-bg proj-bg-1">[縮寫]</div>
+          </div>
+          <div class="card-label">[類型，如 Web App / 工具 / 研究]</div>
+          <h3 class="card-title">[主打專案名稱]</h3>
+          <p class="card-desc">
+            [專案描述：這個專案是什麼？解決了什麼問題？最特別的地方是什麼？讓人一眼就想點進去看。]
+          </p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">[技術 1]</span>
+              <span class="tech-tag">[技術 2]</span>
+              <span class="tech-tag">[技術 3]</span>
+            </div>
+            <a href="projects.html" class="card-link">查看詳情 →</a>
+          </div>
+        </article>
+
+        <!-- 專案卡 2 -->
+        <article class="card">
+          <div class="proj-visual-sm">
+            <div class="proj-bg proj-bg-2 proj-bg-sm">[縮]</div>
+          </div>
+          <div class="card-label">[類型]</div>
+          <h3 class="card-title">[專案名稱 2]</h3>
+          <p class="card-desc">[簡短描述...]</p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">[技術]</span>
+            </div>
+            <a href="projects.html" class="card-link">查看 →</a>
+          </div>
+        </article>
+
+        <!-- 專案卡 3 -->
+        <article class="card">
+          <div class="proj-visual-sm">
+            <div class="proj-bg proj-bg-3 proj-bg-sm">[縮]</div>
+          </div>
+          <div class="card-label">[類型]</div>
+          <h3 class="card-title">[專案名稱 3]</h3>
+          <p class="card-desc">[簡短描述...]</p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">[技術]</span>
+            </div>
+            <a href="projects.html" class="card-link">查看 →</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CONTACT
+       ══════════════════════════════════════ -->
+  <section class="section section-alt" id="contact">
+    <div class="container">
+      <div class="contact-wrap reveal">
+
+        <div class="contact-content">
+          <div class="section-label">聯絡我</div>
+          <h2 class="section-title">有想法？讓我們聊聊</h2>
+          <p>[不論是合作機會、課程諮詢，或只是打聲招呼，我很樂意收到你的訊息！]</p>
+
+          <div class="contact-links">
+            <a href="mailto:orange980730@gmail.com" class="contact-item">
+              <div class="ci-icon">✉️</div>
+              <div>
+                <div class="ci-type">Email</div>
+                <div class="ci-val">orange980730@gmail.com</div>
+              </div>
+            </a>
+            <a href="https://www.instagram.com/orange980730" class="contact-item" target="_blank" rel="noopener noreferrer">
+              <div class="ci-icon">📸</div>
+              <div>
+                <div class="ci-type">Instagram</div>
+                <div class="ci-val">orange980730</div>
+              </div>
+            </a>
+            <a href="https://github.com/orange0730" class="contact-item" target="_blank" rel="noopener noreferrer">
+              <div class="ci-icon">🐙</div>
+              <div>
+                <div class="ci-type">GitHub</div>
+                <div class="ci-val">orange0730</div>
+              </div>
+            </a>
+            <!-- 可再增加其他社群連結，例如 Twitter/X、Instagram 等 -->
+          </div>
+        </div>
+
+        <div class="contact-cta">
+          <a href="mailto:orange980730@gmail.com" class="btn btn-primary btn-xl">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M2 5.5l8 6 8-6M2 5.5h16v11H2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+            傳送 Email
+          </a>
+          <p class="resp-time">⚡ 通常在 24 小時內回覆</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>
+            <span class="logo-name">吳東橙</span>
+            <span class="logo-bracket">&nbsp;/&gt;</span>
+          </a>
+          <p class="footer-tagline">[一句話描述你自己或你的網站]</p>
+        </div>
+
+        <div class="footer-links">
+          <div class="footer-col">
+            <span class="footer-col-title">頁面</span>
+            <a href="index.html">首頁</a>
+            <a href="teaching.html">教學</a>
+            <a href="projects.html">專案</a>
+            <a href="#contact">聯絡</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">社群</span>
+            <a href="https://github.com/orange0730" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.instagram.com/orange980730" target="_blank" rel="noopener">Instagram</a>
+            <a href="mailto:orange980730@gmail.com">Email</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2025 吳東橙。保留所有權利。</span>
+        <span>用 ❤️ 親手打造</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

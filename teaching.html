@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="吳東橙 的教學資源 — 課程、講義與學習材料">
+  <title>教學資源 — 吳東橙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>
+        <span class="logo-name">吳東橙</span>
+        <span class="logo-bracket">&nbsp;/&gt;</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"    class="nav-link">首頁</a></li>
+        <li><a href="teaching.html" class="nav-link active">教學</a></li>
+        <li><a href="projects.html" class="nav-link">專案</a></li>
+        <li><a href="index.html#contact" class="btn btn-sm btn-primary">聯絡我</a></li>
+      </ul>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="開啟選單">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       PAGE HERO
+       ══════════════════════════════════════ -->
+  <section class="page-hero">
+    <div class="page-hero-orb"></div>
+    <div class="page-hero-orb-2"></div>
+    <div class="container">
+      <div class="page-hero-content">
+        <div class="section-label">教學資源</div>
+        <h1 class="section-title">
+          課程 &amp; <span class="gradient-text">講義</span>
+        </h1>
+        <p class="page-hero-desc">
+          [在這裡寫一段關於你的教學理念或教學方向的介紹。例如：你設計這些課程的初衷、適合哪類學習者、或你的教學特色。]
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       COURSES SECTION
+       ══════════════════════════════════════ -->
+  <section class="section" id="courses">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">課程</div>
+          <h2 class="section-title">我開設的課程</h2>
+          <p class="section-desc">系統化的課程設計，從基礎到進階</p>
+        </div>
+      </div>
+
+      <!-- 篩選按鈕 — data-target 指向要篩選的元素，data-filter 對應元素的 data-cat -->
+      <div class="filter-row" data-target=".course-card">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="beginner">入門</button>
+        <button class="filter-btn" data-filter="intermediate">進階</button>
+        <button class="filter-btn" data-filter="workshop">工作坊</button>
+        <!-- 可自行新增更多類別 -->
+      </div>
+
+      <div class="courses-grid stagger">
+
+        <!-- ── 課程卡 1 ────────────────────── -->
+        <article class="course-card" data-cat="beginner">
+          <div class="course-cover" style="background: linear-gradient(135deg, #1e1b4b, #312e81);">
+            <div class="course-cover-bg" style="background: var(--grad);"></div>
+            <span class="course-cover-icon">📊</span>
+          </div>
+          <div class="course-body">
+            <div class="course-meta">
+              <span class="course-level">入門</span>
+              <span class="course-duration">[N] 堂課 · [X] 小時</span>
+            </div>
+            <h3 class="course-title">[課程名稱 1]</h3>
+            <p class="course-desc">
+              [課程描述：這門課教什麼？學完之後能做什麼？適合什麼樣的學習者？用簡單的話說清楚。]
+            </p>
+            <div class="course-footer">
+              <div class="course-tags">
+                <span class="tech-tag">[標籤 1]</span>
+                <span class="tech-tag">[標籤 2]</span>
+              </div>
+              <a href="#" class="course-link">了解更多 →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 課程卡 2 ────────────────────── -->
+        <article class="course-card" data-cat="intermediate">
+          <div class="course-cover" style="background: linear-gradient(135deg, #064e3b, #065f46);">
+            <div class="course-cover-bg" style="background: linear-gradient(135deg, #06b6d4, #10b981);"></div>
+            <span class="course-cover-icon">🧠</span>
+          </div>
+          <div class="course-body">
+            <div class="course-meta">
+              <span class="course-level">進階</span>
+              <span class="course-duration">[N] 堂課 · [X] 小時</span>
+            </div>
+            <h3 class="course-title">[課程名稱 2]</h3>
+            <p class="course-desc">
+              [課程描述...]
+            </p>
+            <div class="course-footer">
+              <div class="course-tags">
+                <span class="tech-tag">[標籤 1]</span>
+                <span class="tech-tag">[標籤 2]</span>
+              </div>
+              <a href="#" class="course-link">了解更多 →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 課程卡 3 ────────────────────── -->
+        <article class="course-card" data-cat="workshop">
+          <div class="course-cover" style="background: linear-gradient(135deg, #4a1942, #7c1d6f);">
+            <div class="course-cover-bg" style="background: linear-gradient(135deg, #ec4899, #7c3aed);"></div>
+            <span class="course-cover-icon">🎨</span>
+          </div>
+          <div class="course-body">
+            <div class="course-meta">
+              <span class="course-level">工作坊</span>
+              <span class="course-duration">[N] 天 · 密集</span>
+            </div>
+            <h3 class="course-title">[工作坊名稱]</h3>
+            <p class="course-desc">
+              [工作坊描述：這個工作坊的特色是什麼？能帶走什麼成果？]
+            </p>
+            <div class="course-footer">
+              <div class="course-tags">
+                <span class="tech-tag">[標籤]</span>
+              </div>
+              <a href="#" class="course-link">報名 →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 課程卡 4 ────────────────────── -->
+        <article class="course-card" data-cat="beginner,intermediate">
+          <div class="course-cover" style="background: linear-gradient(135deg, #1c1917, #292524);">
+            <div class="course-cover-bg" style="background: linear-gradient(135deg, #f59e0b, #ef4444);"></div>
+            <span class="course-cover-icon">🚀</span>
+          </div>
+          <div class="course-body">
+            <div class="course-meta">
+              <span class="course-level">入門 / 進階</span>
+              <span class="course-duration">[N] 堂課</span>
+            </div>
+            <h3 class="course-title">[課程名稱 4]</h3>
+            <p class="course-desc">
+              [課程描述...]
+            </p>
+            <div class="course-footer">
+              <div class="course-tags">
+                <span class="tech-tag">[標籤 1]</span>
+                <span class="tech-tag">[標籤 2]</span>
+              </div>
+              <a href="#" class="course-link">了解更多 →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 更多課程（先留空） ──────────── -->
+        <!-- 複製上方課程卡的程式碼，貼在這裡即可新增課程 -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       HANDOUTS SECTION
+       ══════════════════════════════════════ -->
+  <section class="section section-alt" id="handouts">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">講義 &amp; 資源</div>
+          <h2 class="section-title">可下載的學習材料</h2>
+          <p class="section-desc">整理好的講義、筆記與參考資料，免費分享</p>
+        </div>
+      </div>
+
+      <!-- 篩選按鈕 -->
+      <div class="filter-row" data-target=".handout-item">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="note">筆記</button>
+        <button class="filter-btn" data-filter="slide">簡報</button>
+        <button class="filter-btn" data-filter="exercise">練習題</button>
+        <button class="filter-btn" data-filter="cheatsheet">速查表</button>
+      </div>
+
+      <div class="handouts-list stagger">
+
+        <!-- ── 講義項目 1 ────────────────── -->
+        <div class="handout-item" data-cat="slide">
+          <div class="hi-icon">📑</div>
+          <div class="hi-info">
+            <div class="hi-title">[講義名稱 1]</div>
+            <div class="hi-meta">[所屬課程 / 主題] · [頁數] 頁 · 更新於 [日期]</div>
+          </div>
+          <div class="hi-tags">
+            <span class="tech-tag">[標籤]</span>
+          </div>
+          <div class="hi-action">
+            <a href="#" class="btn btn-ghost btn-sm">下載 PDF</a>
+          </div>
+        </div>
+
+        <!-- ── 講義項目 2 ────────────────── -->
+        <div class="handout-item" data-cat="note">
+          <div class="hi-icon">📓</div>
+          <div class="hi-info">
+            <div class="hi-title">[筆記名稱]</div>
+            <div class="hi-meta">[主題] · [格式] · 更新於 [日期]</div>
+          </div>
+          <div class="hi-tags">
+            <span class="tech-tag">[標籤]</span>
+          </div>
+          <div class="hi-action">
+            <a href="#" class="btn btn-ghost btn-sm">下載</a>
+          </div>
+        </div>
+
+        <!-- ── 講義項目 3 ────────────────── -->
+        <div class="handout-item" data-cat="exercise">
+          <div class="hi-icon">✏️</div>
+          <div class="hi-info">
+            <div class="hi-title">[練習題名稱]</div>
+            <div class="hi-meta">[課程] · [題數] 題 · 含解答</div>
+          </div>
+          <div class="hi-tags">
+            <span class="tech-tag">[標籤]</span>
+          </div>
+          <div class="hi-action">
+            <a href="#" class="btn btn-ghost btn-sm">下載</a>
+          </div>
+        </div>
+
+        <!-- ── 講義項目 4 ────────────────── -->
+        <div class="handout-item" data-cat="cheatsheet">
+          <div class="hi-icon">⚡</div>
+          <div class="hi-info">
+            <div class="hi-title">[速查表名稱]</div>
+            <div class="hi-meta">[主題] · A4 單頁 · 彩色版</div>
+          </div>
+          <div class="hi-tags">
+            <span class="tech-tag">[標籤]</span>
+          </div>
+          <div class="hi-action">
+            <a href="#" class="btn btn-ghost btn-sm">下載 PDF</a>
+          </div>
+        </div>
+
+        <!-- ── 講義項目 5 ────────────────── -->
+        <div class="handout-item" data-cat="slide">
+          <div class="hi-icon">🎯</div>
+          <div class="hi-info">
+            <div class="hi-title">[講義名稱 5]</div>
+            <div class="hi-meta">[課程 / 活動] · [頁數] 頁</div>
+          </div>
+          <div class="hi-tags">
+            <span class="tech-tag">[標籤 1]</span>
+            <span class="tech-tag">[標籤 2]</span>
+          </div>
+          <div class="hi-action">
+            <a href="#" class="btn btn-ghost btn-sm">下載</a>
+          </div>
+        </div>
+
+        <!-- 複製上方項目來新增更多講義 -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       COMING SOON / 即將推出
+       ══════════════════════════════════════ -->
+  <section class="section" id="upcoming">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <div class="section-label">敬請期待</div>
+          <h2 class="section-title">即將推出</h2>
+          <p class="section-desc">正在籌備中的課程與資源</p>
+        </div>
+      </div>
+
+      <div class="cards-grid stagger">
+
+        <article class="card" style="opacity: 0.65; pointer-events: none;">
+          <div class="card-icon-wrap">🔒</div>
+          <div class="card-label">即將推出</div>
+          <h3 class="card-title">[規劃中的課程名稱]</h3>
+          <p class="card-desc">[這門課的預計內容方向和目標受眾...]</p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">開發中</span>
+            </div>
+            <span class="card-link" style="color: var(--t3);">尚未開放</span>
+          </div>
+        </article>
+
+        <article class="card" style="opacity: 0.65; pointer-events: none;">
+          <div class="card-icon-wrap">🔒</div>
+          <div class="card-label">即將推出</div>
+          <h3 class="card-title">[規劃中的課程 2]</h3>
+          <p class="card-desc">[預計內容方向...]</p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tech-tag">籌備中</span>
+            </div>
+            <span class="card-link" style="color: var(--t3);">尚未開放</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>
+            <span class="logo-name">吳東橙</span>
+            <span class="logo-bracket">&nbsp;/&gt;</span>
+          </a>
+          <p class="footer-tagline">[一句話描述你自己或你的網站]</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <span class="footer-col-title">頁面</span>
+            <a href="index.html">首頁</a>
+            <a href="teaching.html">教學</a>
+            <a href="projects.html">專案</a>
+            <a href="index.html#contact">聯絡</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">社群</span>
+            <a href="https://github.com/orange0730" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.instagram.com/orange980730" target="_blank" rel="noopener">Instagram</a>
+            <a href="mailto:orange980730@gmail.com">Email</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 吳東橙。保留所有權利。</span>
+        <span>用 ❤️ 親手打造</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
