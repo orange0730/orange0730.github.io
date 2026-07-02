@@ -213,93 +213,183 @@
       <div class="handouts-list stagger">
 
         <!-- ── 動態規劃完全攻略 ──────────── -->
-        <div class="handout-item" data-cat="note">
-          <div class="hi-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+        <details class="handout-item journey-entry" data-cat="note">
+          <summary>
+            <div class="je-head">
+              <div class="je-head-left" style="flex-direction: row; align-items: center; gap: 14px;">
+                <div class="hi-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+                </div>
+                <div>
+                  <h3 class="je-title" style="margin-bottom: 3px;">動態規劃完全攻略</h3>
+                  <div class="hi-meta">演算法課程 · 筆記 + 例題解析</div>
+                </div>
+              </div>
+              <span class="je-chev" aria-hidden="true">+</span>
+            </div>
+          </summary>
+          <div class="je-body">
+            <p>DP 的核心是把一個大問題拆成「重疊子問題」，並靠三要素建模：<strong>狀態定義</strong>（dp[i] 代表什麼）、<strong>轉移方程</strong>（dp[i] 怎麼由前面的狀態算出來）、<strong>邊界條件</strong>（最小的子問題答案是什麼）。想清楚這三件事，程式碼往往只是把方程式翻譯成迴圈。</p>
+            <p>以經典的 0/1 背包為例：</p>
+            <div class="code-card" style="margin: 14px 0;">
+              <div class="code-card-header">
+                <div class="win-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+                <span class="code-fname">knapsack.cpp</span>
+              </div>
+              <div class="code-card-body"><pre><code>// dp[j] = 容量為 j 時能拿到的最大價值
+int dp[MAXW + 1] = {0};
+for (int i = 0; i < n; i++)
+    for (int j = MAXW; j >= w[i]; j--)   // 倒序避免重複取同一物品
+        dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
+// 答案為 dp[MAXW]</code></pre></div>
+            </div>
+            <p>常見的錯誤是還沒想清楚「狀態要包含哪些維度」就急著寫迴圈——遇到卡關時，先回頭確認狀態定義是否漏掉了某個會影響答案的變數（例如是否用過某物品、剩餘次數等），比硬改程式碼更有效率。</p>
           </div>
-          <div class="hi-info">
-            <div class="hi-title">動態規劃完全攻略</div>
-            <div class="hi-meta">演算法課程 · 筆記 + 例題解析</div>
-          </div>
-          <div class="hi-tags">
-            <span class="tech-tag">DP</span>
-            <span class="tech-tag">C++</span>
-          </div>
-          <div class="hi-action">
-            <a href="mailto:orange980730@gmail.com" class="btn btn-ghost btn-sm">索取</a>
-          </div>
-        </div>
+        </details>
 
         <!-- ── C++ 競程模板大全 ──────────── -->
-        <div class="handout-item" data-cat="cheatsheet">
-          <div class="hi-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+        <details class="handout-item journey-entry" data-cat="cheatsheet">
+          <summary>
+            <div class="je-head">
+              <div class="je-head-left" style="flex-direction: row; align-items: center; gap: 14px;">
+                <div class="hi-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+                </div>
+                <div>
+                  <h3 class="je-title" style="margin-bottom: 3px;">C++ 競程模板大全</h3>
+                  <div class="hi-meta">競程必備 · 速查表 · 含常用資料結構與演算法</div>
+                </div>
+              </div>
+              <span class="je-chev" aria-hidden="true">+</span>
+            </div>
+          </summary>
+          <div class="je-body">
+            <p>每次比賽都會重複用到的骨架，先貼好再開始看題可以省不少時間：</p>
+            <div class="code-card" style="margin: 14px 0;">
+              <div class="code-card-header">
+                <div class="win-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+                <span class="code-fname">template.cpp</span>
+              </div>
+              <div class="code-card-body"><pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define ll long long
+#define pii pair&lt;int,int&gt;
+#define all(x) (x).begin(), (x).end()
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // ---- 題目邏輯 ----
+
+    return 0;
+}</code></pre></div>
+            </div>
+            <p>並查集（Union-Find）是圖論題與連通性判斷最常用的資料結構之一：</p>
+            <div class="code-card" style="margin: 14px 0;">
+              <div class="code-card-header">
+                <div class="win-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+                <span class="code-fname">dsu.cpp</span>
+              </div>
+              <div class="code-card-body"><pre><code>int par[MAXN];
+void init(int n) { iota(par, par + n, 0); }
+int find(int x) { return par[x] == x ? x : par[x] = find(par[x]); }
+void unite(int a, int b) { par[find(a)] = find(b); }</code></pre></div>
+            </div>
           </div>
-          <div class="hi-info">
-            <div class="hi-title">C++ 競程模板大全</div>
-            <div class="hi-meta">競程必備 · 速查表 · 含常用資料結構與演算法</div>
-          </div>
-          <div class="hi-tags">
-            <span class="tech-tag">C++</span>
-          </div>
-          <div class="hi-action">
-            <a href="mailto:orange980730@gmail.com" class="btn btn-ghost btn-sm">索取</a>
-          </div>
-        </div>
+        </details>
 
         <!-- ── 圖論與最短路徑筆記 ──────── -->
-        <div class="handout-item" data-cat="note">
-          <div class="hi-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l7-3 8 3 7-3v15l-7 3-8-3-7 3z"/><path d="M8 3v15M16 6v15"/></svg>
+        <details class="handout-item journey-entry" data-cat="note">
+          <summary>
+            <div class="je-head">
+              <div class="je-head-left" style="flex-direction: row; align-items: center; gap: 14px;">
+                <div class="hi-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l7-3 8 3 7-3v15l-7 3-8-3-7 3z"/><path d="M8 3v15M16 6v15"/></svg>
+                </div>
+                <div>
+                  <h3 class="je-title" style="margin-bottom: 3px;">圖論與最短路徑筆記</h3>
+                  <div class="hi-meta">BFS / DFS · Dijkstra · Bellman-Ford · Floyd</div>
+                </div>
+              </div>
+              <span class="je-chev" aria-hidden="true">+</span>
+            </div>
+          </summary>
+          <div class="je-body">
+            <p>選演算法前先問兩個問題：<strong>邊有沒有權重？</strong>沒有就用 BFS 找最短路；<strong>權重會不會是負的？</strong>會的話 Dijkstra 不適用，要換 Bellman-Ford。</p>
+            <div class="code-card" style="margin: 14px 0;">
+              <div class="code-card-header">
+                <div class="win-dots"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span></div>
+                <span class="code-fname">dijkstra.cpp</span>
+              </div>
+              <div class="code-card-body"><pre><code>vector&lt;ll&gt; dist(n, LLONG_MAX);
+priority_queue&lt;pii, vector&lt;pii&gt;, greater&lt;pii&gt;&gt; pq; // {距離, 節點}
+dist[src] = 0;
+pq.push({0, src});
+while (!pq.empty()) {
+    auto [d, u] = pq.top(); pq.pop();
+    if (d > dist[u]) continue;          // 已經有更短的路了，跳過
+    for (auto [v, w] : adj[u]) {
+        if (dist[u] + w < dist[v]) {
+            dist[v] = dist[u] + w;
+            pq.push({dist[v], v});
+        }
+    }
+}</code></pre></div>
+            </div>
+            <p>時間複雜度 O((V + E) log V)，是目前最常用的非負權重最短路解法。</p>
           </div>
-          <div class="hi-info">
-            <div class="hi-title">圖論與最短路徑筆記</div>
-            <div class="hi-meta">BFS / DFS · Dijkstra · Bellman-Ford · Floyd</div>
-          </div>
-          <div class="hi-tags">
-            <span class="tech-tag">圖論</span>
-            <span class="tech-tag">C++</span>
-          </div>
-          <div class="hi-action">
-            <a href="mailto:orange980730@gmail.com" class="btn btn-ghost btn-sm">索取</a>
-          </div>
-        </div>
+        </details>
 
-        <!-- ── APCS 歷屆實作題解析 ──────── -->
-        <div class="handout-item" data-cat="exercise">
-          <div class="hi-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
+        <!-- ── APCS 實作題解題策略 ──────── -->
+        <details class="handout-item journey-entry" data-cat="exercise">
+          <summary>
+            <div class="je-head">
+              <div class="je-head-left" style="flex-direction: row; align-items: center; gap: 14px;">
+                <div class="hi-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
+                </div>
+                <div>
+                  <h3 class="je-title" style="margin-bottom: 3px;">APCS 實作題解題策略</h3>
+                  <div class="hi-meta">APCS 備考 · 解題思路與時間分配</div>
+                </div>
+              </div>
+              <span class="je-chev" aria-hidden="true">+</span>
+            </div>
+          </summary>
+          <div class="je-body">
+            <p>APCS 實作題四題的配分與難度大致遞增，實務上建議的策略：</p>
+            <p><strong>第一步：估算複雜度再動手。</strong>看到資料範圍先換算能接受的時間複雜度——n ≤ 10⁶ 通常要 O(n log n) 以內，n ≤ 10³ 才能接受 O(n²)。先算完再選演算法，可以避免寫到一半才發現會超時。</p>
+            <p><strong>第二步：先拿部分分。</strong>第三、四題常會設計成有子任務或特殊情況分數，就算想不到滿分解法，先用暴力解拿到部分分再優化，比空白交卷划算。</p>
+            <p><strong>第三步：邊界值自己造測資。</strong>n = 0、n = 1、全部元素相同、資料剛好等於上限，這些邊界最容易漏掉，寫完後手動帶入測試比直接送出更保險。</p>
           </div>
-          <div class="hi-info">
-            <div class="hi-title">APCS 歷屆實作題解析</div>
-            <div class="hi-meta">APCS 備考 · 含解題思路與完整程式碼</div>
-          </div>
-          <div class="hi-tags">
-            <span class="tech-tag">APCS</span>
-          </div>
-          <div class="hi-action">
-            <a href="mailto:orange980730@gmail.com" class="btn btn-ghost btn-sm">索取</a>
-          </div>
-        </div>
+        </details>
 
-        <!-- ── 演算法入門簡報 ───────────── -->
-        <div class="handout-item" data-cat="slide">
-          <div class="hi-icon" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M8 21h8M12 18v3"/><path d="M7 9h10M7 13h6"/></svg>
+        <!-- ── 演算法入門課程大綱 ───────────── -->
+        <details class="handout-item journey-entry" data-cat="slide">
+          <summary>
+            <div class="je-head">
+              <div class="je-head-left" style="flex-direction: row; align-items: center; gap: 14px;">
+                <div class="hi-icon" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M8 21h8M12 18v3"/><path d="M7 9h10M7 13h6"/></svg>
+                </div>
+                <div>
+                  <h3 class="je-title" style="margin-bottom: 3px;">演算法入門課程大綱</h3>
+                  <div class="hi-meta">排序 · 搜尋 · 遞迴 · 貪心 · 程式社教材</div>
+                </div>
+              </div>
+              <span class="je-chev" aria-hidden="true">+</span>
+            </div>
+          </summary>
+          <div class="je-body">
+            <p><strong>排序：</strong>從 Bubble Sort、Insertion Sort 理解「為什麼慢」開始，再帶到 Merge Sort（分治）與 Quick Sort（樞紐選取），比較各自的最壞情況與適用時機。</p>
+            <p><strong>搜尋：</strong>線性搜尋 vs. 二分搜尋，重點在二分搜尋的前提（資料要已排序）與邊界寫法（left/right/mid 的收斂條件），這是最多初學者會寫出無窮迴圈的地方。</p>
+            <p><strong>遞迴：</strong>用河內塔、費氏數列建立「相信遞迴」的直覺，再講解呼叫堆疊與記憶化如何解決重複計算問題，銜接到後面的 DP 課程。</p>
+            <p><strong>貪心：</strong>用區間排程、找零錢等例題說明貪心成立的條件（局部最佳導致全域最佳），並舉反例說明貪心不是萬用解法。</p>
           </div>
-          <div class="hi-info">
-            <div class="hi-title">演算法入門課程簡報</div>
-            <div class="hi-meta">排序 · 搜尋 · 遞迴 · 貪心 · 程式社教材</div>
-          </div>
-          <div class="hi-tags">
-            <span class="tech-tag">演算法</span>
-          </div>
-          <div class="hi-action">
-            <a href="mailto:orange980730@gmail.com" class="btn btn-ghost btn-sm">索取</a>
-          </div>
-        </div>
+        </details>
 
-        <!-- 可繼續新增講義，或直接提供下載連結 -->
+        <!-- 可繼續新增講義 -->
 
       </div>
     </div>
