@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="吳東橙 的解題心得 — 競程題目的解題思路與筆記">
+  <title>解題心得 — 吳東橙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/solutions.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>
+        <span class="logo-name">吳東橙</span>
+        <span class="logo-bracket">&nbsp;/&gt;</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"    class="nav-link">首頁</a></li>
+        <li><a href="index.html#journey" class="nav-link">心得</a></li>
+        <li><a href="teaching.html" class="nav-link">教學</a></li>
+        <li><a href="projects.html" class="nav-link">專案</a></li>
+        <li><a href="solutions.html" class="nav-link active">解題</a></li>
+        <li><a href="index.html#contact" class="btn btn-sm btn-primary">聯絡我</a></li>
+      </ul>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="開啟選單">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       PAGE HERO
+       ══════════════════════════════════════ -->
+  <section class="page-hero">
+    <div class="page-hero-orb"></div>
+    <div class="page-hero-orb-2"></div>
+    <div class="container">
+      <div class="page-hero-content">
+        <div class="section-label">Problem Solving</div>
+        <h1 class="section-title">
+          解題 <span class="gradient-text">心得</span>
+        </h1>
+        <p class="page-hero-desc">
+          刷過的題目、卡關的地方、最後想通的那個關鍵。把每一題的解題思路記下來，留給未來的自己，也留給正在卡同一題的你。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SOLUTIONS LIST
+       ══════════════════════════════════════ -->
+  <section class="section sol-section">
+    <div class="container">
+
+      <div class="sol-toolbar">
+        <div class="sol-search">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="solSearch" placeholder="搜尋題號、題名、標籤或內容…" autocomplete="off">
+        </div>
+        <div class="sol-actions">
+          <button class="btn btn-sm btn-primary" id="solAddBtn" hidden>＋ 新增心得</button>
+          <button class="btn btn-sm btn-ghost" id="solAdminBtn" title="管理模式">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <span id="solAdminLabel">管理</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-row" id="solFilters"></div>
+
+      <p class="sol-count" id="solCount"></p>
+      <div class="sol-list" id="solList"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       DETAIL MODAL
+       ══════════════════════════════════════ -->
+  <div class="sol-modal" id="viewModal" hidden>
+    <div class="sol-modal-backdrop" data-close></div>
+    <article class="sol-modal-panel sol-view">
+      <header class="sol-view-head">
+        <div class="sol-view-meta" id="viewMeta"></div>
+        <button class="sol-close" data-close aria-label="關閉">×</button>
+      </header>
+      <h2 class="sol-view-title" id="viewTitle"></h2>
+      <div class="sol-view-sub" id="viewSub"></div>
+      <div class="md-body" id="viewBody"></div>
+      <footer class="sol-view-foot" id="viewFoot"></footer>
+    </article>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       EDITOR MODAL
+       ══════════════════════════════════════ -->
+  <div class="sol-modal" id="editModal" hidden>
+    <div class="sol-modal-backdrop"></div>
+    <form class="sol-modal-panel sol-editor" id="editForm" autocomplete="off">
+      <header class="sol-view-head">
+        <h2 class="sol-editor-title" id="editTitle">新增解題心得</h2>
+        <button type="button" class="sol-close" data-close aria-label="關閉">×</button>
+      </header>
+
+      <div class="sol-fields">
+        <label class="sol-field">
+          <span>網站 *</span>
+          <input name="site" list="siteOptions" required placeholder="Codeforces">
+          <datalist id="siteOptions"></datalist>
+        </label>
+        <label class="sol-field">
+          <span>題號 *</span>
+          <input name="problemId" required placeholder="1999A">
+        </label>
+        <label class="sol-field sol-field-wide">
+          <span>題目名稱</span>
+          <input name="title" placeholder="例：Weird Algorithm">
+        </label>
+        <label class="sol-field sol-field-wide">
+          <span>題目連結</span>
+          <input name="url" type="url" placeholder="填好網站和題號會自動帶入">
+        </label>
+        <label class="sol-field">
+          <span>標籤（逗號分隔）</span>
+          <input name="tags" placeholder="DP, 二分搜">
+        </label>
+        <label class="sol-field">
+          <span>日期</span>
+          <input name="date" type="date">
+        </label>
+      </div>
+
+      <div class="sol-md-tabs">
+        <button type="button" class="filter-btn active" data-pane="write">撰寫</button>
+        <button type="button" class="filter-btn" data-pane="preview">預覽</button>
+        <span class="sol-md-hint">支援 Markdown、程式碼高亮、LaTeX（<code>$O(n\log n)$</code>）</span>
+      </div>
+      <div class="sol-md-split" id="mdSplit" data-pane="write">
+        <textarea name="content" id="editContent" spellcheck="false" placeholder="## 題意
+簡述題目在問什麼
+
+## 思路
+一開始想到…，但會 TLE，所以改成 $O(n \log n)$ 的做法…
+
+## 程式碼
+```cpp
+int main() {
+    // ...
+}
+```"></textarea>
+        <div class="md-body sol-preview" id="editPreview"></div>
+      </div>
+
+      <footer class="sol-editor-foot">
+        <span class="sol-status" id="editStatus"></span>
+        <div class="sol-editor-btns">
+          <button type="button" class="btn btn-sm sol-danger" id="editDelete" hidden>刪除</button>
+          <button type="button" class="btn btn-sm btn-outline" data-close>取消</button>
+          <button type="submit" class="btn btn-sm btn-primary" id="editSave">儲存</button>
+        </div>
+      </footer>
+    </form>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       ADMIN (TOKEN) MODAL
+       ══════════════════════════════════════ -->
+  <div class="sol-modal" id="adminModal" hidden>
+    <div class="sol-modal-backdrop" data-close></div>
+    <form class="sol-modal-panel sol-admin" id="adminForm" autocomplete="off">
+      <header class="sol-view-head">
+        <h2 class="sol-editor-title">管理模式</h2>
+        <button type="button" class="sol-close" data-close aria-label="關閉">×</button>
+      </header>
+      <p class="sol-admin-desc">
+        心得存在 GitHub repo 的 <code>data/solutions.json</code>。輸入有寫入權限的 GitHub Token 後，就能直接在這個頁面新增、編輯、刪除，儲存時會自動 commit 到 repo。
+      </p>
+      <ol class="sol-admin-steps">
+        <li>到 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Fine-grained tokens</a> 建立新 token</li>
+        <li>Repository access 選 <strong>Only select repositories</strong> → <code>orange0730.github.io</code></li>
+        <li>Permissions → Repository permissions → <strong>Contents: Read and write</strong></li>
+        <li>產生後貼到下面（只會存在這台裝置的瀏覽器）</li>
+      </ol>
+      <label class="sol-field sol-field-wide">
+        <span>GitHub Token</span>
+        <input name="token" type="password" placeholder="github_pat_…" autocomplete="off">
+      </label>
+      <footer class="sol-editor-foot">
+        <span class="sol-status" id="adminStatus"></span>
+        <div class="sol-editor-btns">
+          <button type="button" class="btn btn-sm btn-outline" id="adminLogout" hidden>登出</button>
+          <button type="submit" class="btn btn-sm btn-primary">驗證並登入</button>
+        </div>
+      </footer>
+    </form>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>
+            <span class="logo-name">吳東橙</span>
+            <span class="logo-bracket">&nbsp;/&gt;</span>
+          </a>
+          <p class="footer-tagline">競程 × 教學 × 開源工具</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <span class="footer-col-title">頁面</span>
+            <a href="index.html">首頁</a>
+            <a href="teaching.html">教學</a>
+            <a href="projects.html">專案</a>
+            <a href="solutions.html">解題</a>
+            <a href="index.html#contact">聯絡</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-title">社群</span>
+            <a href="https://github.com/orange0730" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.instagram.com/orange980730" target="_blank" rel="noopener">Instagram</a>
+            <a href="mailto:orange980730@gmail.com">Email</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 吳東橙。保留所有權利。</span>
+        <span>親手打造</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/solutions.js"></script>
+</body>
+</html>
