@@ -1,3 +1,18 @@
 {
-  "solutions": []
+  "solutions": [
+    {
+      "id": "cses-1638",
+      "site": "CSES",
+      "problemId": "1638",
+      "title": "Grid Paths I",
+      "url": "https://cses.fi/problemset/task/1638",
+      "tags": [
+        "DP"
+      ],
+      "date": "2026-10-27",
+      "content": "## 題敘\n給一個大小n*n的圖，求從左上角走到右下角的方法數。\n走路方式:只能往右或往下走，遇到障礙物'#'不能走。\n",
+      "createdAt": "2026-10-27T15:10:12.632Z",
+      "updatedAt": "2026-10-27T15:10:12.632Z"
+    }
+  ]
 }
